@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "declaration": true,        
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "outDir": "build",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es6"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "build"]
+}
