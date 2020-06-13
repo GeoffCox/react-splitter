@@ -103,3 +103,5 @@ If you overcome these limitations in your own code, pull requests are appreciate
 ## 1.0.1 - Bug fixes
     - CSS was incorrect on the splitter preventing hover state
     - Peer dependencies should not have included styled-components nor react-measure as npm no longer auto-installs peer dependencies.
+## 1.0.2 - Bug fixes
+    - Rollup config was incorrect causing 1.0.1 to not be published correctly.
