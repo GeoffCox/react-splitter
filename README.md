@@ -2,7 +2,7 @@
 A resizable splitter for React that the grid templates in CSS rather than complex JavasScript resizing logic.
 
 # Demo
-Live Demo: [CodePen.io](https://cdpn.io/GeoffCox/debug/YzwWVPJ/XxMVwjBeNRDr)
+[Live Demo](https://geoffcox.github.io/react-splitter-demo/index.html)
 
 Build and run the [Demo](/demo) to see react-splitter in action.
 
