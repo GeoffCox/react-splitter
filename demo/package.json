@@ -1,0 +1,33 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-dev": "webpack --config webpack.config.js --mode development",
+    "build-prod": "webpack --config webpack.config.js --mode production"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^16.9.36",
+    "@types/react-dom": "^16.9.8",
+    "awesome-typescript-loader": "^5.2.1",
+    "html-webpack-plugin": "^4.3.0",
+    "html-webpack-template": "^6.2.0",
+    "source-map-loader": "^1.0.0",
+    "typescript": "3.7.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@geoffcox/react-splitter": "^1.0.0",
+    "@types/styled-components": "4.1.8",
+    "css-loader": "^3.5.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-measure": "^2.3.0",
+    "style-loader": "^1.2.1",
+    "styled-components": "^5.1.1"
+  }
+}

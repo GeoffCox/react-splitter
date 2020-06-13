@@ -1,0 +1,24 @@
+body {
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    border: '5px solid yellow';
+  }
+  
+  body,
+  div {
+    box-sizing: border-box;
+  }
+  
+  #app {
+    position: relative;
+    height: 100%;
+    box-sizing: border-box;
+  }
+    

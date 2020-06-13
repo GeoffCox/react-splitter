@@ -25,9 +25,10 @@ The splitter itself cannot be sized beyond the bounds of the screen, so the maxi
 
 These controls use the CSS grid-template to provide the visual resizing. The left and top grid areas are sized as the user drags the splitter. This library leverages the efficient dynamic style updates from styled-components to allow for rapid style updates.
 
+Recommended: The parent element of LeftRightSplit or TopBottomSplit should not be auto-sized based on its children. Consider a 1fr grid, a flex box, or a fixed size parent. See the demo app for an example of this.
+
 ## Basic Left/Right and Top/Bottom splits
 ```tsx
-
     <LeftRightSplit>
         <div>This will go on the left</div>
         <div>This will go on the right</div>
@@ -35,7 +36,6 @@ These controls use the CSS grid-template to provide the visual resizing. The lef
 ```
 
 ```tsx
-
     <TopBottomSplit>
         <div>This will go on the top</div>
         <div>This will go on the bottom</div>
@@ -45,7 +45,6 @@ These controls use the CSS grid-template to provide the visual resizing. The lef
 ## Nested splits
 
 ```tsx
-
     <LeftRightSplit>
         <div>This will go on the left</div>
         <TopBottomSplit>
@@ -62,7 +61,6 @@ The initial left width or top height can be:
 - a number of pixels: 150
 
 ```tsx
-
     <LeftRightSplit initialLeftGridWidth="70%">
         <div>This will go on the left</div>
         <TopBottomSplit initialTopGridHeight="200px">
@@ -76,7 +74,6 @@ The initial left width or top height can be:
 The minimum sizes can be set for left and/or right and top and/or bottom.  These are always a number of pixels.
 
 ```tsx
-
     <LeftRightSplit inLeftPixels="50" minRightPixels="100">
         <div>This will go on the left</div>
         <TopBottomSplit inTopPixels="160" minBottomPixels="100">
@@ -100,3 +97,9 @@ These are several limitations of this initial release.
 - No callbacks for monitoring the split or pane resizing.  For now, a workaround is to use something like react-measure to wrap children and observe sizing changes.
 
 If you overcome these limitations in your own code, pull requests are appreciated. :-)
+
+# Change History
+## 1.0.0 - First publication of the LeftRightSplit and TopBottomSplit
+## 1.0.1 - Bug fixes
+    - CSS was incorrect on the splitter preventing hover state
+    - Peer dependencies should not have included styled-components nor react-measure as npm no longer auto-installs peer dependencies.

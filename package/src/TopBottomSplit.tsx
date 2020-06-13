@@ -47,8 +47,8 @@ const Split = styled.div`
     grid-area: split;
     cursor: row-resize;
     outline: none;
-    &:hover: {
-        background: gray;
+    &:hover {
+    background: gray;
     }
 `;
 
