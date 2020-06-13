@@ -21,7 +21,7 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "@geoffcox/react-splitter": "^1.0.0",
+    "@geoffcox/react-splitter": "^1.0.2",
     "@types/styled-components": "4.1.8",
     "css-loader": "^3.5.3",
     "react": "^16.13.1",
