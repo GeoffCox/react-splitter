@@ -1,5 +1,5 @@
 # @geoffcox/react-splitter
-A resizable splitter for React that the grid templates in CSS rather than complex JavasScript resizing logic.
+A resizable splitter for React that leverages CSS display:grid
 
 # Installation
 ```npm install --save @geoffcox/react-splitter```
@@ -101,7 +101,7 @@ If you overcome these limitations in your own code, pull requests are appreciate
 # Change History
 ## 1.0.0 - First publication of the LeftRightSplit and TopBottomSplit
 ## 1.0.1 - Bug fixes
-    - CSS was incorrect on the splitter preventing hover state
-    - Peer dependencies should not have included styled-components nor react-measure as npm no longer auto-installs peer dependencies.
+- CSS was incorrect on the splitter preventing hover state
+- Peer dependencies should not have included styled-components nor react-measure as npm no longer auto-installs peer dependencies.
 ## 1.0.2 - Bug fixes
-    - Rollup config was incorrect causing 1.0.1 to not be published correctly.
+- Rollup config was incorrect causing 1.0.1 to not be published correctly.
