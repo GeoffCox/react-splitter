@@ -1,6 +1,11 @@
 # @geoffcox/react-splitter
 A resizable splitter for React that leverages CSS display:grid
 
+# Demo
+[Live Demo](https://geoffcox.github.io/react-splitter-demo/index.html)
+
+You can also build and run the [Demo](/demo) to see react-splitter in action.
+
 # Installation
 ```npm install --save @geoffcox/react-splitter```
 
