@@ -1,6 +1,6 @@
-import * as React from 'react';
-import styled, { css } from 'styled-components';
-import { default as Measure, ContentRect } from 'react-measure';
+import * as React from "react";
+import styled, { css } from "styled-components";
+import { default as Measure, ContentRect } from "react-measure";
 
 // -------------------- STYLE --------------------
 
@@ -18,15 +18,17 @@ const MeasureDiv = styled.div`
   ${fullDivCss}
 `;
 
-const Root = styled.div.attrs(({ leftColWidth }: { leftColWidth: string }): any => ({
-  style: {
-    gridTemplateColumns: `${leftColWidth} ${splitterWidth}px 1fr`,
-  },
-}))`
+const Root = styled.div.attrs(
+  ({ leftColWidth }: { leftColWidth: string }): any => ({
+    style: {
+      gridTemplateColumns: `${leftColWidth} ${splitterWidth}px 1fr`,
+    },
+  })
+)`
   ${fullDivCss}
   display: grid;
   grid-template-rows: 1fr;
-  grid-template-areas: 'left split right';
+  grid-template-areas: "left split right";
 `;
 
 const Left = styled.div`
@@ -65,15 +67,15 @@ const Right = styled.div`
 // defaults to 'auto'
 const toGridWidth = (value?: string | number) => {
   if (value === undefined || value === null) {
-    return 'auto';
+    return "auto";
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     if (value.trim().length === 0) {
-      return 'auto';
+      return "auto";
     }
 
-    if (value.endsWith('px') || value.endsWith('%') || value.endsWith('fr')) {
+    if (value.endsWith("px") || value.endsWith("%") || value.endsWith("fr")) {
       return value;
     }
   }
@@ -119,22 +121,39 @@ type Props = {
   minRightPixels?: number;
 };
 
-export const LeftRightSplit = (props: React.PropsWithChildren<Props>): JSX.Element => {
-  const { initialLeftGridWidth: defaultLeftWidth, minRightPixels, minLeftPixels } = props;
+export const LeftRightSplit = (
+  props: React.PropsWithChildren<Props>
+): JSX.Element => {
+  const {
+    initialLeftGridWidth: defaultLeftWidth,
+    minRightPixels,
+    minLeftPixels,
+  } = props;
 
   // -------------------- HOOKS --------------------
 
-  const [currentContentWidth, setCurrentContentWidth] = React.useState<number>(0);
+  const [currentContentWidth, setCurrentContentWidth] = React.useState<number>(
+    0
+  );
   const [currentLeftWidth, setCurrentLeftWidth] = React.useState<number>(0);
 
   const [leftWidth, setLeftWidth] = React.useState(() => {
     // If the default is a number, then use it or the left minimum as a value.
     const numericValue = Number(defaultLeftWidth);
-    return isNaN(numericValue) ? -1 : Math.max(numericValue, minLeftPixels ?? numericValue);
+    return isNaN(numericValue)
+      ? -1
+      : Math.max(numericValue, minLeftPixels ?? numericValue);
   });
 
   const [leftStart, setLeftStart] = React.useState(0);
   const [screenStart, setScreenStart] = React.useState(0);
+
+  React.useEffect(() => {
+    if (leftWidth !== -1) {
+      const newLeft = constrainLeft(leftWidth);
+      setLeftWidth(newLeft);
+    }
+  }, [currentContentWidth]);
 
   // -------------------- MEASUREMENT --------------------
 
@@ -195,10 +214,17 @@ export const LeftRightSplit = (props: React.PropsWithChildren<Props>): JSX.Eleme
           <Root leftColWidth={renderLeftWidth}>
             <Left>
               <Measure bounds onResize={onLeftMeasure}>
-                {({ measureRef: leftRef }) => <MeasureDiv ref={leftRef}>{leftChild}</MeasureDiv>}
+                {({ measureRef: leftRef }) => (
+                  <MeasureDiv ref={leftRef}>{leftChild}</MeasureDiv>
+                )}
               </Measure>
             </Left>
-            <Split tabIndex={-1} onMouseDown={onSplitMouseDown} onMouseMove={onSplitMouseMove} onMouseUp={onSplitMouseUp} />
+            <Split
+              tabIndex={-1}
+              onMouseDown={onSplitMouseDown}
+              onMouseMove={onSplitMouseMove}
+              onMouseUp={onSplitMouseUp}
+            />
             <Right>{rightChild}</Right>
           </Root>
         </MeasureDiv>

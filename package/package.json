@@ -1,10 +1,13 @@
 {
   "name": "@geoffcox/react-splitter",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A splitter for React components that leverages CSS grid templates for simple and consistent resizing.",
   "main": "build/index.js",
   "module": "build/index.es.js",
   "jsnext:main": "build/index.es.js",
+  "files": [
+    "build/"
+  ],
   "scripts": {
     "build": "rollup -c"
   },
