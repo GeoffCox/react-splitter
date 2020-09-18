@@ -4,7 +4,7 @@ import { default as Measure, ContentRect } from "react-measure";
 
 // -------------------- STYLE --------------------
 
-const splitterWidth = 5;
+const defaultSplitterWidth = 5;
 
 const fullDivCss = css`
   width: 100%;
@@ -19,7 +19,13 @@ const MeasureDiv = styled.div`
 `;
 
 const Root = styled.div.attrs(
-  ({ leftColWidth }: { leftColWidth: string }): any => ({
+  ({
+    leftColWidth,
+    splitterWidth,
+  }: {
+    leftColWidth: string;
+    splitterWidth: number;
+  }): any => ({
     style: {
       gridTemplateColumns: `${leftColWidth} ${splitterWidth}px 1fr`,
     },
@@ -44,13 +50,27 @@ const Split = styled.div`
   box-sizing: border-box;
   outline: none;
   overflow: hidden;
-  background: silver;
   grid-area: split;
   cursor: col-resize;
-  outline: none;
-  &:hover {
+  background: transparent;
+  &:hover .default-split-visual {
     background: gray;
   }
+`;
+
+const DefaultSplitVisual = styled.div.attrs(
+  ({ splitterWidth }: { splitterWidth: number }): any => ({
+    halfWidth: `${splitterWidth / 2}px`,
+  })
+)`
+  height: 100%;
+  width: 1px;
+  box-sizing: border-box;
+  outline: none;
+  overflow: hidden;
+  background: silver;
+  cursor: col-resize;
+  margin-left: ${(props) => props.halfWidth};
 `;
 
 const Right = styled.div`
@@ -119,6 +139,8 @@ type Props = {
   initialLeftGridWidth?: string | number;
   minLeftPixels?: number;
   minRightPixels?: number;
+  splitterWidth?: number;
+  renderSplitter?: () => JSX.Element;
 };
 
 export const LeftRightSplit = (
@@ -128,6 +150,7 @@ export const LeftRightSplit = (
     initialLeftGridWidth: defaultLeftWidth,
     minRightPixels,
     minLeftPixels,
+    splitterWidth = defaultSplitterWidth,
   } = props;
 
   // -------------------- HOOKS --------------------
@@ -153,7 +176,7 @@ export const LeftRightSplit = (
       const newLeft = constrainLeft(leftWidth);
       setLeftWidth(newLeft);
     }
-  }, [currentContentWidth]);
+  }, [currentContentWidth, splitterWidth]);
 
   // -------------------- MEASUREMENT --------------------
 
@@ -211,7 +234,7 @@ export const LeftRightSplit = (
     <Measure bounds onResize={onContentMeasure}>
       {({ measureRef }) => (
         <MeasureDiv ref={measureRef}>
-          <Root leftColWidth={renderLeftWidth}>
+          <Root leftColWidth={renderLeftWidth} splitterWidth={splitterWidth}>
             <Left>
               <Measure bounds onResize={onLeftMeasure}>
                 {({ measureRef: leftRef }) => (
@@ -224,7 +247,12 @@ export const LeftRightSplit = (
               onMouseDown={onSplitMouseDown}
               onMouseMove={onSplitMouseMove}
               onMouseUp={onSplitMouseUp}
-            />
+            >
+              <DefaultSplitVisual
+                className="default-split-visual"
+                splitterWidth={splitterWidth}
+              />
+            </Split>
             <Right>{rightChild}</Right>
           </Root>
         </MeasureDiv>

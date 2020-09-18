@@ -4,8 +4,7 @@ import { default as Measure, ContentRect } from "react-measure";
 
 // -------------------- STYLE --------------------
 
-const splitterHeight = 5;
-const splitterHeightPx = `${splitterHeight}px`;
+const defaultSplitterHeight = 5;
 
 const fullDivCss = css`
   width: 100%;
@@ -20,9 +19,15 @@ const MeasureDiv = styled.div`
 `;
 
 const Root = styled.div.attrs(
-  ({ topRowHeight }: { topRowHeight: string }): any => ({
+  ({
+    topRowHeight,
+    splitterHeight,
+  }: {
+    topRowHeight: string;
+    splitterHeight: number;
+  }): any => ({
     style: {
-      gridTemplateRows: `${topRowHeight} ${splitterHeightPx} 1fr`,
+      gridTemplateRows: `${topRowHeight} ${splitterHeight}px 1fr`,
     },
   })
 )`
@@ -45,13 +50,27 @@ const Split = styled.div`
   box-sizing: border-box;
   outline: none;
   overflow: hidden;
-  background: silver;
   grid-area: split;
-  cursor: row-resize;
-  outline: none;
-  &:hover {
+  cursor: col-resize;
+  background: transparent;
+  &:hover .default-split-visual {
     background: gray;
   }
+`;
+
+const DefaultSplitVisual = styled.div.attrs(
+  ({ splitterHeight }: { splitterHeight: number }): any => ({
+    halfHeight: `${splitterHeight / 2}px`,
+  })
+)`
+  width: 100%;
+  height: 1px;
+  box-sizing: border-box;
+  outline: none;
+  overflow: hidden;
+  background: silver;
+  cursor: row-resize;
+  margin-top: ${(props) => props.halfHeight};
 `;
 
 const Bottom = styled.div`
@@ -120,12 +139,19 @@ type Props = {
   initialTopGridHeight?: string | number;
   minTopPixels?: number;
   minBottomPixels?: number;
+  splitterHeight?: number;
+  renderSplit?: () => JSX.Element;
 };
 
 export const TopBottomSplit = (
   props: React.PropsWithChildren<Props>
 ): JSX.Element => {
-  const { initialTopGridHeight, minBottomPixels, minTopPixels } = props;
+  const {
+    initialTopGridHeight,
+    minBottomPixels,
+    minTopPixels,
+    splitterHeight = defaultSplitterHeight,
+  } = props;
 
   // -------------------- HOOKS --------------------
 
@@ -150,7 +176,7 @@ export const TopBottomSplit = (
       const newTop = constrainTop(topHeight);
       setTopHeight(newTop);
     }
-  }, [currentContentHeight]);
+  }, [currentContentHeight, splitterHeight]);
 
   // -------------------- MEASUREMENT --------------------
 
@@ -208,7 +234,7 @@ export const TopBottomSplit = (
     <Measure bounds onResize={onContentMeasure}>
       {({ measureRef }) => (
         <MeasureDiv ref={measureRef}>
-          <Root topRowHeight={renderTopHeight}>
+          <Root topRowHeight={renderTopHeight} splitterHeight={splitterHeight}>
             <Top>
               <Measure bounds onResize={onTopMeasure}>
                 {({ measureRef: topRef }) => (
@@ -221,7 +247,12 @@ export const TopBottomSplit = (
               onMouseDown={onSplitMouseDown}
               onMouseMove={onSplitMouseMove}
               onMouseUp={onSplitMouseUp}
-            />
+            >
+              <DefaultSplitVisual
+                className="default-split-visual"
+                splitterHeight={defaultSplitterHeight}
+              />
+            </Split>
             <Bottom>{bottomChild}</Bottom>
           </Root>
         </MeasureDiv>
