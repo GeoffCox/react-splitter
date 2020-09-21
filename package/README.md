@@ -101,9 +101,8 @@ A: The secondary pane (right or bottom) minimum is compromised. The sizing algor
 
 # Known limitations
 
-These are several limitations of this initial release.
+These are several limitations of the current release.
 
-- Cannot customize the splitter. The splitter is 5px and has a silver background. The splitter needs a class name applied for CSS control from the caller container and there needs to be an optional renderProps callback.
 - No keyboard control of splitter. The splitter can only be controlled with the mouse.
 - The splitter does not support reset. The splitter does not yet recognize a double-click and move back to its initial position.
 - Resizing is immediate as the user drags the splitter. The resize needs to be debounced to ensure visual update performance. This should be controllable through a property.
@@ -124,6 +123,14 @@ If you overcome these limitations in your own code, pull requests are appreciate
 
 - Rollup config was incorrect causing 1.0.1 to not be published correctly.
 
-## 1.03 - Measurement reaction bug fix
+## 1.0.3 - Measurement reaction bug fix
 
 - Resize of split was not reacting to overall area decreasing where the splitter gets hidden
+
+## 1.0.4 - Custom splitter rendering
+
+- Added optional splitterWidth/splitterHeight to props to allow caller to control splitter size
+- Added option renderSplitter function to allow caller to render a custom splitter
+- Updated default splitter to be thin line with same 5px hit area
+- Updated demo to optionally show custom rendered splitter
+- Fixed bug with cursor on top/bottom splitter

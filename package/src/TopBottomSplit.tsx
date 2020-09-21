@@ -51,7 +51,7 @@ const Split = styled.div`
   outline: none;
   overflow: hidden;
   grid-area: split;
-  cursor: col-resize;
+  cursor: row-resize;
   background: transparent;
   &:hover .default-split-visual {
     background: gray;
@@ -140,7 +140,7 @@ type Props = {
   minTopPixels?: number;
   minBottomPixels?: number;
   splitterHeight?: number;
-  renderSplit?: () => JSX.Element;
+  renderSplitter?: () => JSX.Element;
 };
 
 export const TopBottomSplit = (
@@ -151,6 +151,7 @@ export const TopBottomSplit = (
     minBottomPixels,
     minTopPixels,
     splitterHeight = defaultSplitterHeight,
+    renderSplitter,
   } = props;
 
   // -------------------- HOOKS --------------------
@@ -230,6 +231,17 @@ export const TopBottomSplit = (
   const topChild = children.length > 0 ? children[0] : <div />;
   const bottomChild = children.length > 1 ? children[1] : <div />;
 
+  const renderSplitVisual =
+    renderSplitter ??
+    (() => {
+      return (
+        <DefaultSplitVisual
+          className="default-split-visual"
+          splitterHeight={splitterHeight}
+        />
+      );
+    });
+
   return (
     <Measure bounds onResize={onContentMeasure}>
       {({ measureRef }) => (
@@ -248,10 +260,7 @@ export const TopBottomSplit = (
               onMouseMove={onSplitMouseMove}
               onMouseUp={onSplitMouseUp}
             >
-              <DefaultSplitVisual
-                className="default-split-visual"
-                splitterHeight={defaultSplitterHeight}
-              />
+              {renderSplitVisual()}
             </Split>
             <Bottom>{bottomChild}</Bottom>
           </Root>

@@ -151,6 +151,7 @@ export const LeftRightSplit = (
     minRightPixels,
     minLeftPixels,
     splitterWidth = defaultSplitterWidth,
+    renderSplitter,
   } = props;
 
   // -------------------- HOOKS --------------------
@@ -230,6 +231,17 @@ export const LeftRightSplit = (
   const leftChild = children.length > 0 ? children[0] : <div />;
   const rightChild = children.length > 1 ? children[1] : <div />;
 
+  const renderSplitVisual =
+    renderSplitter ??
+    (() => {
+      return (
+        <DefaultSplitVisual
+          className="default-split-visual"
+          splitterWidth={splitterWidth}
+        />
+      );
+    });
+
   return (
     <Measure bounds onResize={onContentMeasure}>
       {({ measureRef }) => (
@@ -248,10 +260,7 @@ export const LeftRightSplit = (
               onMouseMove={onSplitMouseMove}
               onMouseUp={onSplitMouseUp}
             >
-              <DefaultSplitVisual
-                className="default-split-visual"
-                splitterWidth={splitterWidth}
-              />
+              {renderSplitVisual()}
             </Split>
             <Right>{rightChild}</Right>
           </Root>
