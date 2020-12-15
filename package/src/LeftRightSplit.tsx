@@ -1,10 +1,10 @@
-import * as React from "react";
-import styled, { css } from "styled-components";
-import { default as Measure, ContentRect } from "react-measure";
+import * as React from 'react';
+import styled, { css } from 'styled-components';
+import { default as Measure, ContentRect } from 'react-measure';
 
 // -------------------- STYLE --------------------
 
-const defaultSplitterWidth = 5;
+const defaultSplitterWidth = '5px';
 
 const fullDivCss = css`
   width: 100%;
@@ -22,19 +22,23 @@ const Root = styled.div.attrs(
   ({
     leftColWidth,
     splitterWidth,
+    minLeftColWidth,
+    minRightColWidth,
   }: {
     leftColWidth: string;
-    splitterWidth: number;
+    splitterWidth: string;
+    minLeftColWidth: string;
+    minRightColWidth: string;
   }): any => ({
     style: {
-      gridTemplateColumns: `${leftColWidth} ${splitterWidth}px 1fr`,
+      gridTemplateColumns: `minmax(${minLeftColWidth},${leftColWidth}) ${splitterWidth} minmax(${minRightColWidth}, 1fr)`,
     },
   })
 )`
   ${fullDivCss}
   display: grid;
   grid-template-rows: 1fr;
-  grid-template-areas: "left split right";
+  grid-template-areas: 'left split right';
 `;
 
 const Left = styled.div`
@@ -56,13 +60,12 @@ const Split = styled.div`
   &:hover .default-split-visual {
     background: gray;
   }
+  user-select: none;
 `;
 
-const DefaultSplitVisual = styled.div.attrs(
-  ({ splitterWidth }: { splitterWidth: number }): any => ({
-    halfWidth: `${splitterWidth / 2}px`,
-  })
-)`
+const DefaultSplitVisual = styled.div.attrs(({ splitterWidth }: { splitterWidth: number }): any => ({
+  halfWidth: `${splitterWidth / 2}px`,
+}))`
   height: 100%;
   width: 1px;
   box-sizing: border-box;
@@ -81,114 +84,57 @@ const Right = styled.div`
   grid-area: right;
 `;
 
-// -------------------- UTILITIES --------------------
-
-// ensures a value can be used in gridTemplateColumns
-// defaults to 'auto'
-const toGridWidth = (value?: string | number) => {
-  if (value === undefined || value === null) {
-    return "auto";
-  }
-
-  if (typeof value === "string") {
-    if (value.trim().length === 0) {
-      return "auto";
-    }
-
-    if (value.endsWith("px") || value.endsWith("%") || value.endsWith("fr")) {
-      return value;
-    }
-  }
-
-  return `${value}px`;
-};
-
-// constrains the extend of a pane given split constraints
-const constrainPaneExtent = (
-  primary: number,
-  constraints: {
-    total: number;
-    splitter: number;
-    minPrimary?: number;
-    minSecondary?: number;
-  }
-): number => {
-  const { total, splitter, minPrimary, minSecondary } = constraints;
-
-  // ensure within total bounds
-  let newPrimary = Math.max(0, Math.min(primary, total - splitter));
-
-  // adjust satisfy minSecondary
-  const secondary = total - (newPrimary + splitter);
-  if (minSecondary && secondary < minSecondary) {
-    newPrimary = newPrimary - Math.max(0, minSecondary - secondary);
-  }
-
-  // adjust to satisfy minPrimary
-  if (minPrimary && newPrimary < minPrimary) {
-    newPrimary = minPrimary;
-  }
-
-  // ensure within total bounds after adjustments
-  return Math.max(0, Math.min(newPrimary, total - splitter));
-};
-
-// -------------------- COMPONENT --------------------
-
-type Props = {
-  initialLeftGridWidth?: string | number;
-  minLeftPixels?: number;
-  minRightPixels?: number;
-  splitterWidth?: number;
+export type LeftRightSplitProps = {
+  /**
+   * The initial width of the left pane.
+   * Width is specified as a CSS unit (e.g. %, fr, px)
+   */
+  initialLeftWidth?: string;
+  /**
+   * The preferred minimum width of the left pane.
+   * Width is specified as a CSS unit (e.g. %, fr, px)
+   */
+  minLeftWidth?: string;
+  /**
+   * The preferred minimum width of the right pane.
+   * Width is specified as a CSS unit (e.g. %, fr, px)
+   */
+  minRightWidth?: string;
+  /**
+   * The width of the splitter between the left and right panes.
+   * Width is specified as a CSS unit (e.g. %, fr, px)
+   */
+  splitterWidth?: string;
+  /**
+   * Render props for the splitter.
+   */
   renderSplitter?: () => JSX.Element;
+
+  /**
+   * When true, if the user double clicks the splitter it will reset to its initial width.
+   * The default is false.
+   */
+  resetOnDoubleClick?: boolean;
 };
 
-export const LeftRightSplit = (
-  props: React.PropsWithChildren<Props>
-): JSX.Element => {
+export const LeftRightSplit = (props: React.PropsWithChildren<LeftRightSplitProps>): JSX.Element => {
   const {
-    initialLeftGridWidth: defaultLeftWidth,
-    minRightPixels,
-    minLeftPixels,
+    initialLeftWidth,
+    minRightWidth,
+    minLeftWidth,
     splitterWidth = defaultSplitterWidth,
     renderSplitter,
+    resetOnDoubleClick,
   } = props;
 
-  // -------------------- HOOKS --------------------
-
-  const [currentContentWidth, setCurrentContentWidth] = React.useState<number>(
-    0
-  );
+  const [currentContentWidth, setCurrentContentWidth] = React.useState<number>(0);
   const [currentLeftWidth, setCurrentLeftWidth] = React.useState<number>(0);
+  const [currentSplitterWidth, setCurrentSplitterWidth] = React.useState<number>(0);
 
-  const [leftWidth, setLeftWidth] = React.useState(() => {
-    // If the default is a number, then use it or the left minimum as a value.
-    const numericValue = Number(defaultLeftWidth);
-    return isNaN(numericValue)
-      ? -1
-      : Math.max(numericValue, minLeftPixels ?? numericValue);
-  });
+  const [percent, setPercent] = React.useState<number | undefined>(undefined);
 
+  const [clientStart, setClientStart] = React.useState(0);
   const [leftStart, setLeftStart] = React.useState(0);
-  const [screenStart, setScreenStart] = React.useState(0);
-
-  React.useEffect(() => {
-    if (leftWidth !== -1) {
-      const newLeft = constrainLeft(leftWidth);
-      setLeftWidth(newLeft);
-    }
-  }, [currentContentWidth, splitterWidth]);
-
-  // -------------------- MEASUREMENT --------------------
-
-  const constrainLeft = (value: number): number => {
-    return constrainPaneExtent(value, {
-      total: currentContentWidth,
-      splitter: splitterWidth,
-      minPrimary: minLeftPixels,
-      minSecondary: minRightPixels,
-    });
-  };
 
   const onContentMeasure = (contentRect: ContentRect) => {
     contentRect.bounds && setCurrentContentWidth(contentRect.bounds.width);
@@ -198,69 +144,74 @@ export const LeftRightSplit = (
     contentRect.bounds && setCurrentLeftWidth(contentRect.bounds.width);
   };
 
-  // -------------------- MOUSE HANDLERS --------------------
+  const onSplitterMeasure = (contentRect: ContentRect) => {
+    contentRect.bounds && setCurrentSplitterWidth(contentRect.bounds.width);
+  };
 
-  const onSplitMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.currentTarget.setPointerCapture(1);
-    setScreenStart(event.screenX);
+  const onSplitPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setClientStart(event.clientX);
     setLeftStart(currentLeftWidth);
   };
 
-  const onSplitMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.currentTarget.hasPointerCapture(1)) {
-      // calculate candidate left
-      const newLeft = constrainLeft(leftStart + (event.screenX - screenStart));
-      setLeftWidth(newLeft);
+  const onSplitPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      const leftWidth = leftStart + (event.clientX - clientStart);
+      const newLeft = Math.max(0, Math.min(leftWidth, currentContentWidth));
+      const newPercent = (newLeft / currentContentWidth) * 100;
+      setPercent(newPercent);
     }
   };
 
-  const onSplitMouseUp = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.currentTarget.releasePointerCapture(1);
+  const onSplitPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    event.currentTarget.releasePointerCapture(event.pointerId);
   };
 
-  // -------------------- RENDER --------------------
-
-  // If the left width has never been set
-  // try using the default as a number and constraining it
-  let renderLeftWidth = `${leftWidth}px`;
-  if (leftWidth < 0) {
-    renderLeftWidth = toGridWidth(defaultLeftWidth);
-  }
+  const onSplitDoubleClick = () => {
+    resetOnDoubleClick && setPercent(undefined);
+  };
 
   const children = React.Children.toArray(props.children);
   const leftChild = children.length > 0 ? children[0] : <div />;
   const rightChild = children.length > 1 ? children[1] : <div />;
 
+  const renderDimensions = {
+    left: percent !== undefined ? `${percent}%` : initialLeftWidth,
+    minLeft: minLeftWidth ?? '0px',
+    minRight: minRightWidth ?? '0px',
+  };
+
   const renderSplitVisual =
     renderSplitter ??
     (() => {
-      return (
-        <DefaultSplitVisual
-          className="default-split-visual"
-          splitterWidth={splitterWidth}
-        />
-      );
+      return <DefaultSplitVisual className="default-split-visual" splitterWidth={currentSplitterWidth} />;
     });
 
   return (
     <Measure bounds onResize={onContentMeasure}>
       {({ measureRef }) => (
         <MeasureDiv ref={measureRef}>
-          <Root leftColWidth={renderLeftWidth} splitterWidth={splitterWidth}>
+          <Root
+            leftColWidth={renderDimensions.left}
+            splitterWidth={splitterWidth}
+            minLeftColWidth={renderDimensions.minLeft}
+            minRightColWidth={renderDimensions.minRight}
+          >
             <Left>
               <Measure bounds onResize={onLeftMeasure}>
-                {({ measureRef: leftRef }) => (
-                  <MeasureDiv ref={leftRef}>{leftChild}</MeasureDiv>
-                )}
+                {({ measureRef: leftRef }) => <MeasureDiv ref={leftRef}>{leftChild}</MeasureDiv>}
               </Measure>
             </Left>
             <Split
               tabIndex={-1}
-              onMouseDown={onSplitMouseDown}
-              onMouseMove={onSplitMouseMove}
-              onMouseUp={onSplitMouseUp}
+              onPointerDown={onSplitPointerDown}
+              onPointerUp={onSplitPointerUp}
+              onPointerMove={onSplitPointerMove}
+              onDoubleClick={onSplitDoubleClick}
             >
-              {renderSplitVisual()}
+              <Measure bounds onResize={onSplitterMeasure}>
+                {({ measureRef: splitterRef }) => <MeasureDiv ref={splitterRef}>{renderSplitVisual()}</MeasureDiv>}
+              </Measure>
             </Split>
             <Right>{rightChild}</Right>
           </Root>

@@ -1,2 +1,2 @@
- export * from './LeftRightSplit';
- export * from './TopBottomSplit';
+export * from "src/LeftRightSplit";
+export * from "src/TopBottomSplit";
