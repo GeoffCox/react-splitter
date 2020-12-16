@@ -12,24 +12,24 @@ const fullDivCss = css`
   overflow: hidden;
 `;
 
-const MeasureDiv = styled.div`
+const FullDiv = styled.div`
   ${fullDivCss}
 `;
 
 const Root = styled.div.attrs(
   ({
-    leftColWidth,
+    leftWidth,
     splitterWidth,
-    minLeftColWidth,
-    minRightColWidth,
+    minLeftWidth,
+    minRightWidth,
   }: {
-    leftColWidth: string;
+    leftWidth: string;
     splitterWidth: string;
-    minLeftColWidth: string;
-    minRightColWidth: string;
+    minLeftWidth: string;
+    minRightWidth: string;
   }): any => ({
     style: {
-      gridTemplateColumns: `minmax(${minLeftColWidth},${leftColWidth}) ${splitterWidth} minmax(${minRightColWidth}, 1fr)`,
+      gridTemplateColumns: `minmax(${minLeftWidth},${leftWidth}) ${splitterWidth} minmax(${minRightWidth}, 1fr)`,
     },
   })
 )`
@@ -188,16 +188,16 @@ export const LeftRightSplit = (props: React.PropsWithChildren<LeftRightSplitProp
   return (
     <Measure bounds onResize={onContentMeasure}>
       {({ measureRef }) => (
-        <MeasureDiv ref={measureRef}>
+        <FullDiv ref={measureRef}>
           <Root
-            leftColWidth={renderDimensions.left}
+            leftWidth={renderDimensions.left}
             splitterWidth={splitterWidth}
-            minLeftColWidth={renderDimensions.minLeft}
-            minRightColWidth={renderDimensions.minRight}
+            minLeftWidth={renderDimensions.minLeft}
+            minRightWidth={renderDimensions.minRight}
           >
             <Left>
               <Measure bounds onResize={onLeftMeasure}>
-                {({ measureRef: leftRef }) => <MeasureDiv ref={leftRef}>{leftChild}</MeasureDiv>}
+                {({ measureRef: leftRef }) => <FullDiv ref={leftRef}>{leftChild}</FullDiv>}
               </Measure>
             </Left>
             <Split
@@ -208,12 +208,12 @@ export const LeftRightSplit = (props: React.PropsWithChildren<LeftRightSplitProp
               onDoubleClick={onSplitDoubleClick}
             >
               <Measure bounds onResize={onSplitterMeasure}>
-                {({ measureRef: splitterRef }) => <MeasureDiv ref={splitterRef}>{renderSplitVisual()}</MeasureDiv>}
+                {({ measureRef: splitterRef }) => <FullDiv ref={splitterRef}>{renderSplitVisual()}</FullDiv>}
               </Measure>
             </Split>
             <Right>{rightChild}</Right>
           </Root>
-        </MeasureDiv>
+        </FullDiv>
       )}
     </Measure>
   );

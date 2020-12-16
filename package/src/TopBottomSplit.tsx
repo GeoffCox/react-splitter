@@ -12,7 +12,7 @@ const fullDivCss = css`
   overflow: hidden;
 `;
 
-const MeasureDiv = styled.div`
+const FullDiv = styled.div`
   ${fullDivCss}
 `;
 
@@ -189,7 +189,7 @@ export const TopBottomSplit = (props: React.PropsWithChildren<TopBottomSplitProp
   return (
     <Measure bounds onResize={onContentMeasure}>
       {({ measureRef }) => (
-        <MeasureDiv ref={measureRef}>
+        <FullDiv ref={measureRef}>
           <Root
             topHeight={renderDimensions.top}
             splitterHeight={splitterHeight}
@@ -198,7 +198,7 @@ export const TopBottomSplit = (props: React.PropsWithChildren<TopBottomSplitProp
           >
             <Top>
               <Measure bounds onResize={onTopMeasure}>
-                {({ measureRef: topRef }) => <MeasureDiv ref={topRef}>{topChild}</MeasureDiv>}
+                {({ measureRef: topRef }) => <FullDiv ref={topRef}>{topChild}</FullDiv>}
               </Measure>
             </Top>
             <Split
@@ -209,12 +209,12 @@ export const TopBottomSplit = (props: React.PropsWithChildren<TopBottomSplitProp
               onDoubleClick={onSplitDoubleClick}
             >
               <Measure bounds onResize={onSplitterMeasure}>
-                {({ measureRef: splitterRef }) => <MeasureDiv ref={splitterRef}>{renderSplitVisual()}</MeasureDiv>}
+                {({ measureRef: splitterRef }) => <FullDiv ref={splitterRef}>{renderSplitVisual()}</FullDiv>}
               </Measure>
             </Split>
             <Bottom>{bottomChild}</Bottom>
           </Root>
-        </MeasureDiv>
+        </FullDiv>
       )}
     </Measure>
   );
