@@ -2,11 +2,17 @@ import * as React from 'react';
 // import { LeftRightSplit, TopBottomSplit } from "@geoffcox/react-splitter";
 import { LeftRightSplit } from '../../../package/src/LeftRightSplit';
 import { TopBottomSplit } from '../../../package/src/TopBottomSplit';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { useRecoilCallback, useRecoilState, useRecoilValue } from 'recoil';
 import { createSplitOptions, splitStateFamily } from '../model/appModel';
 import { SplitNode } from '../model/types';
+import {
+  LeftRightSolidSplitter,
+  LeftRightStripeSplitter,
+  TopBottomSolidSplitter,
+  TopBottomStripeSplitter,
+} from './CustomSplitters';
 
 const fullDivCss = css`
   width: 100%;
@@ -42,107 +48,6 @@ const ActionButton = styled.button`
   padding: 5px;
   margin: 0 0 5px 5px;
   user-select: none;
-`;
-
-const stripeVars = css`
-  --stripe-size: 50px;
-  --color1: silver;
-  --color2: gray;
-  --duration: 2s;
-`;
-
-const verticalStripeAnimation = keyframes`
-  ${stripeVars}
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(calc(var(--stripe-size) * -1));
-  }
-`;
-
-const horizontalStripeAnimation = keyframes`
-  ${stripeVars}
-  0% {
-    transform: translateX(calc(var(--stripe-size) * -1));
-  }
-  100% {
-    transform: translateX(0);
-  }
-`;
-
-const HorizontalStripeSplitter = styled.div`
-  ${stripeVars}
-
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(100% + var(--stripe-size));
-    height: 100%;
-    background: repeating-linear-gradient(
-      45deg,
-      var(--color2) 25%,
-      var(--color2) 50%,
-      var(--color1) 50%,
-      var(--color1) 75%
-    );
-    background-size: var(--stripe-size) var(--stripe-size);
-    animation: ${horizontalStripeAnimation} var(--duration) linear infinite;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(ellipse at center, rgba(#1b2735, 0) 0%, #090a0f 100%);
-  }
-`;
-
-const VerticalStripeSplitter = styled.div`
-  ${stripeVars}
-
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(100% + var(--stripe-size));
-    height: 100%;
-    background: repeating-linear-gradient(
-      45deg,
-      var(--color2) 25%,
-      var(--color2) 50%,
-      var(--color1) 50%,
-      var(--color1) 75%
-    );
-    background-size: var(--stripe-size) var(--stripe-size);
-    animation: ${verticalStripeAnimation} var(--duration) linear infinite;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(ellipse at center, rgba(#1b2735, 0) 0%, #090a0f 100%);
-  }
 `;
 
 type Props = {
@@ -200,14 +105,6 @@ export const DynamicPane = (props: Props) => {
     [id]
   );
 
-  const renderCustomHorizontalSplit = () => {
-    return <HorizontalStripeSplitter />;
-  };
-
-  const renderCustomVerticalSplit = () => {
-    return <VerticalStripeSplitter />;
-  };
-
   const renderActions = () => {
     return (
       <>
@@ -223,20 +120,44 @@ export const DynamicPane = (props: Props) => {
     );
   };
 
+  const getLeftRightRenderSplitterCallback = () => {
+    switch (options?.splitterType) {
+      case 'solid':
+        return () => <LeftRightSolidSplitter />;
+      case 'striped':
+        return () => <LeftRightStripeSplitter />;
+      default:
+        return undefined;
+    }
+  };
+
   const renderLeftRightSplit = () => {
     return (
-      <LeftRightSplit
-        initialLeftWidth={options?.initialPrimaryExtent}
-        minLeftWidth={options?.minPrimaryExtent}
-        minRightWidth={options?.minSecondaryExtent}
-        renderSplitter={options?.splitterType === 'striped' ? renderCustomVerticalSplit : undefined}
-        splitterWidth={options?.splitterExtent}
-        resetOnDoubleClick={true}
-      >
-        {primaryId ? <DynamicPane id={primaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
-        {secondaryId ? <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
-      </LeftRightSplit>
+      options && (
+        <LeftRightSplit
+          initialLeftWidth={options.initialPrimaryExtent}
+          minLeftWidth={options.minPrimaryExtent}
+          minRightWidth={options.minSecondaryExtent}
+          renderSplitter={getLeftRightRenderSplitterCallback()}
+          splitterWidth={options.splitterExtent}
+          resetOnDoubleClick={true}
+        >
+          {primaryId ? <DynamicPane id={primaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
+          {secondaryId ? <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
+        </LeftRightSplit>
+      )
     );
+  };
+
+  const getTopBottomRenderSplitterCallback = () => {
+    switch (options?.splitterType) {
+      case 'solid':
+        return () => <TopBottomSolidSplitter />;
+      case 'striped':
+        return () => <TopBottomStripeSplitter />;
+      default:
+        return undefined;
+    }
   };
 
   const renderTopBottomSplit = () => {
@@ -245,7 +166,7 @@ export const DynamicPane = (props: Props) => {
         initialTopHeight={options?.initialPrimaryExtent}
         minTopHeight={options?.minPrimaryExtent}
         minBottomHeight={options?.minSecondaryExtent}
-        renderSplitter={options?.splitterType === 'striped' ? renderCustomHorizontalSplit : undefined}
+        renderSplitter={getTopBottomRenderSplitterCallback()}
         splitterHeight={options?.splitterExtent}
         resetOnDoubleClick={true}
       >

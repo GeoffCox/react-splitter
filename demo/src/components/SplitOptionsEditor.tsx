@@ -2,8 +2,8 @@ import * as React from 'react';
 import { useRecoilState } from 'recoil';
 import styled, { css } from 'styled-components';
 import { createSplitOptions } from '../model/appModel';
-import { SplitDirection } from '../model/types';
-import { EditorLayoutIcon, LeftRight5050LayoutIcon, QuadLayoutIcon, TopBottom5050LayoutIcon } from './LayoutIcons';
+import { SplitDirection, SplitterType } from '../model/types';
+import { LeftRight5050LayoutIcon, TopBottom5050LayoutIcon } from './LayoutIcons';
 
 const fullDivCss = css`
   width: 100%;
@@ -24,7 +24,7 @@ const Root = styled.div`
 
 const PropertyGrid = styled.div`
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: minmax(175px, auto) auto;
   grid-auto-flow: rows;
   align-content: start;
   justify-content: start;
@@ -36,7 +36,13 @@ const PropertyLabel = styled.label`
   margin: 3px 0 0 0;
 `;
 
-const RadioArea = styled.div`
+const RadioOptions = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const RadioOption = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -47,14 +53,13 @@ const PropertyInput = styled.input`
   width: 150px;
 `;
 
-const SplitDirectionArea = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
 const SplitDirectionRadio = styled.input`
   margin: 0 5px 0 0;
+`;
+
+const SplitDirectionIcon = styled.div`
+  width: 85px;
+  height: 50px;
 `;
 
 const leftRightLabels = {
@@ -109,10 +114,10 @@ export const SplitOptionsEditor = () => {
     });
   };
 
-  const onCustomSplitterChanged = (value: boolean) => {
+  const onCustomSplitterChanged = (value: string) => {
     setOptions({
       ...options,
-      splitterType: value ? 'striped' : 'default',
+      splitterType: value as SplitterType,
     });
   };
 
@@ -129,14 +134,10 @@ export const SplitOptionsEditor = () => {
 
   return (
     <Root>
-      <LeftRight5050LayoutIcon />
-      <TopBottom5050LayoutIcon />
-      <QuadLayoutIcon />
-      <EditorLayoutIcon />
       <PropertyGrid>
         <PropertyLabel>Split Direction</PropertyLabel>
-        <SplitDirectionArea>
-          <RadioArea>
+        <RadioOptions>
+          <RadioOption>
             <SplitDirectionRadio
               name="splitDirection"
               type="radio"
@@ -145,9 +146,13 @@ export const SplitOptionsEditor = () => {
               checked={splitDirection === 'LR'}
               onChange={(e) => onSplitDrectionChanged(e.target.value)}
             />
-            <label htmlFor="LeftRightRadio">Left|Right</label>
-          </RadioArea>
-          <RadioArea>
+            <label htmlFor="LeftRightRadio">
+              <SplitDirectionIcon>
+                <LeftRight5050LayoutIcon />
+              </SplitDirectionIcon>
+            </label>
+          </RadioOption>
+          <RadioOption>
             <SplitDirectionRadio
               name="splitDirection"
               type="radio"
@@ -156,9 +161,13 @@ export const SplitOptionsEditor = () => {
               checked={splitDirection === 'TB'}
               onChange={(e) => onSplitDrectionChanged(e.target.value)}
             />
-            <label htmlFor="TopBottomRadio">Top/Bottom</label>
-          </RadioArea>
-        </SplitDirectionArea>
+            <label htmlFor="TopBottomRadio">
+              <SplitDirectionIcon>
+                <TopBottom5050LayoutIcon />
+              </SplitDirectionIcon>
+            </label>
+          </RadioOption>
+        </RadioOptions>
         <PropertyLabel htmlFor="InitialPrimary">{labels.initialPrimaryExtent}</PropertyLabel>
         <PropertyInput
           id="InitialPrimary"
@@ -188,15 +197,38 @@ export const SplitOptionsEditor = () => {
           onChange={(e) => onSplitterExtentChanged(e.target.value)}
         />
         <PropertyLabel>Splitter Type</PropertyLabel>
-        <RadioArea>
-          <input
-            id="CustomSplitter"
-            type="checkbox"
-            checked={splitterType === 'striped'}
-            onChange={(e) => onCustomSplitterChanged(e.target.checked)}
-          />
-          <label htmlFor="CustomSplitter">Custom</label>
-        </RadioArea>
+        <RadioOptions>
+          <RadioOption>
+            <input
+              id="DefaultSplitter"
+              type="radio"
+              value={'default'}
+              checked={splitterType === 'default'}
+              onChange={(e) => onCustomSplitterChanged(e.target.value)}
+            />
+            <label htmlFor="DefaultSplitter">Default</label>
+          </RadioOption>
+          <RadioOption>
+            <input
+              id="SolidSplitter"
+              type="radio"
+              value={'solid'}
+              checked={splitterType === 'solid'}
+              onChange={(e) => onCustomSplitterChanged(e.target.value)}
+            />
+            <label htmlFor="SolidSplitter">Solid</label>
+          </RadioOption>
+          <RadioOption>
+            <input
+              id="StripedSplitter"
+              type="radio"
+              value={'striped'}
+              checked={splitterType === 'striped'}
+              onChange={(e) => onCustomSplitterChanged(e.target.value)}
+            />
+            <label htmlFor="StripedSplitter">Striped</label>
+          </RadioOption>
+        </RadioOptions>
       </PropertyGrid>
     </Root>
   );

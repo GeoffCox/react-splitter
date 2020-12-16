@@ -1,12 +1,14 @@
 export type SplitDirection = 'LR' | 'TB' | undefined;
 
+export type SplitterType = 'default' | 'solid' | 'striped';
+
 export type SplitOptions = {
   splitDirection: SplitDirection;
   initialPrimaryExtent: string;
   minPrimaryExtent: string;
   minSecondaryExtent: string;
   splitterExtent: string;
-  splitterType: 'default' | 'striped';
+  splitterType: SplitterType;
 };
 
 export type SplitNode = {

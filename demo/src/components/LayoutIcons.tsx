@@ -10,8 +10,6 @@ const fullDivCss = css`
 
 const Root = styled.div`
   ${fullDivCss}
-  width: 85px;
-  height: 50px;
   border: 2px solid darkgray;
   margin: 5px;
   user-select: none;
@@ -78,50 +76,6 @@ export const TopBottom5050LayoutIcon = () => {
         <HSplit />
         <Pane />
       </TopBottomLayout>
-    </Root>
-  );
-};
-
-export const QuadLayoutIcon = () => {
-  return (
-    <Root>
-      <LeftRightLayout leftWidth="50%" rightWidth="50%">
-        <Pane>
-          <TopBottomLayout topHeight="50%" bottomHeight="50%">
-            <Pane />
-            <HSplit />
-            <Pane />
-          </TopBottomLayout>
-        </Pane>
-        <VSplit />
-        <Pane>
-          <TopBottomLayout topHeight="50%" bottomHeight="50%">
-            <Pane />
-            <HSplit />
-            <Pane />
-          </TopBottomLayout>
-        </Pane>
-      </LeftRightLayout>
-    </Root>
-  );
-};
-
-export const EditorLayoutIcon = () => {
-  return (
-    <Root>
-      <LeftRightLayout leftWidth="10%" rightWidth="90%">
-        <Pane />
-        <VSplit />
-        <LeftRightLayout leftWidth="30%" rightWidth="70%">
-          <Pane />
-          <VSplit />
-          <TopBottomLayout topHeight="70%" bottomHeight="30%">
-            <Pane />
-            <HSplit />
-            <Pane />
-          </TopBottomLayout>
-        </LeftRightLayout>
-      </LeftRightLayout>
     </Root>
   );
 };

@@ -2,9 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { default as Measure, ContentRect } from 'react-measure';
 
-// -------------------- STYLE --------------------
-
-const defaultSplitterWidth = '5px';
+const defaultSplitterWidth = '6px';
 
 const fullDivCss = css`
   width: 100%;
@@ -67,7 +65,7 @@ const DefaultSplitVisual = styled.div.attrs(({ splitterWidth }: { splitterWidth:
   halfWidth: `${splitterWidth / 2}px`,
 }))`
   height: 100%;
-  width: 1px;
+  width: 2px;
   box-sizing: border-box;
   outline: none;
   overflow: hidden;
@@ -108,7 +106,7 @@ export type LeftRightSplitProps = {
   /**
    * Render props for the splitter.
    */
-  renderSplitter?: () => JSX.Element;
+  renderSplitter?: () => React.ReactNode | undefined;
 
   /**
    * When true, if the user double clicks the splitter it will reset to its initial width.
@@ -117,7 +115,7 @@ export type LeftRightSplitProps = {
   resetOnDoubleClick?: boolean;
 };
 
-export const LeftRightSplit = (props: React.PropsWithChildren<LeftRightSplitProps>): JSX.Element => {
+export const LeftRightSplit = (props: React.PropsWithChildren<LeftRightSplitProps>) => {
   const {
     initialLeftWidth,
     minRightWidth,
