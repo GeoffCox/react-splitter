@@ -1,86 +1,5 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
-import { default as Measure, ContentRect } from 'react-measure';
-
-const defaultSplitterHeight = '6px';
-
-const fullDivCss = css`
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-`;
-
-const FullDiv = styled.div`
-  ${fullDivCss}
-`;
-
-const Root = styled.div.attrs(
-  ({
-    topHeight,
-    splitterHeight,
-    minTopHeight,
-    minBottomHeight,
-  }: {
-    topHeight: string;
-    splitterHeight: string;
-    minTopHeight: string;
-    minBottomHeight: string;
-  }): any => ({
-    style: {
-      gridTemplateRows: `minmax(${minTopHeight},${topHeight}) ${splitterHeight} minmax(${minBottomHeight}, 1fr)`,
-    },
-  })
-)`
-  ${fullDivCss}
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-areas: 'top' 'split' 'bottom';
-`;
-
-const Top = styled.div`
-  width: 100%;
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  grid-area: top;
-`;
-
-const Split = styled.div`
-  width: 100%;
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  grid-area: split;
-  cursor: row-resize;
-  background: transparent;
-  &:hover .default-split-visual {
-    background: gray;
-  },
-  user-select: none;
-`;
-
-const DefaultSplitVisual = styled.div.attrs(({ splitterHeight }: { splitterHeight: number }): any => ({
-  halfHeight: `${splitterHeight / 2}px`,
-}))`
-  width: 100%;
-  height: 2px;
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  background: silver;
-  cursor: row-resize;
-  margin-top: ${(props) => props.halfHeight};
-`;
-
-const Bottom = styled.div`
-  width: 100%;
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  grid-area: bottom;
-`;
+import { RenderSplitterProps, Split } from './Split';
 
 export type TopBottomSplitProps = {
   /**
@@ -106,116 +25,38 @@ export type TopBottomSplitProps = {
   /**
    * Render props for the splitter.
    */
-  renderSplitter?: () => React.ReactNode | undefined;
+  renderSplitter?: (props: RenderSplitterProps) => React.ReactNode | undefined;
 
   /**
    * When true, if the user double clicks the splitter it will reset to its initial height.
    * The default is false.
    */
   resetOnDoubleClick?: boolean;
+  /**
+   * The colors to use for the default splitter.
+   * Only used when renderSplitter is undefined;
+   * The defaults are silver, gray, and darkgray
+   */
+  defaultSplitterColors?: {
+    color: string;
+    hover: string;
+    drag: string;
+  };
 };
 
 export const TopBottomSplit = (props: React.PropsWithChildren<TopBottomSplitProps>) => {
-  const {
-    initialTopHeight,
-    minBottomHeight,
-    minTopHeight,
-    splitterHeight = defaultSplitterHeight,
-    renderSplitter,
-    resetOnDoubleClick,
-  } = props;
-
-  const [currentContentHeight, setCurrentContentHeight] = React.useState<number>(0);
-  const [currentTopHeight, setCurrentTopHeight] = React.useState<number>(0);
-  const [currentSplitterHeight, setCurrentSplitterHeight] = React.useState<number>(0);
-
-  const [percent, setPercent] = React.useState<number | undefined>(undefined);
-
-  const [clientStart, setClientStart] = React.useState(0);
-  const [topStart, setTopStart] = React.useState(0);
-
-  const onContentMeasure = (contentRect: ContentRect) => {
-    contentRect.bounds && setCurrentContentHeight(contentRect.bounds.height);
-  };
-
-  const onTopMeasure = (contentRect: ContentRect) => {
-    contentRect.bounds && setCurrentTopHeight(contentRect.bounds.height);
-  };
-
-  const onSplitterMeasure = (contentRect: ContentRect) => {
-    contentRect.bounds && setCurrentSplitterHeight(contentRect.bounds.height);
-  };
-
-  const onSplitPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setClientStart(event.clientY);
-    setTopStart(currentTopHeight);
-  };
-
-  const onSplitPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      const topHeight = topStart + (event.clientY - clientStart);
-      const newTop = Math.max(0, Math.min(topHeight, currentContentHeight));
-      const newPercent = (newTop / currentContentHeight) * 100;
-      setPercent(newPercent);
-    }
-  };
-
-  const onSplitPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-    event.currentTarget.releasePointerCapture(event.pointerId);
-  };
-
-  const onSplitDoubleClick = () => {
-    resetOnDoubleClick && setPercent(undefined);
-  };
-
-  const children = React.Children.toArray(props.children);
-  const topChild = children.length > 0 ? children[0] : <div />;
-  const bottomChild = children.length > 1 ? children[1] : <div />;
-
-  const renderDimensions = {
-    top: percent !== undefined ? `${percent}%` : initialTopHeight,
-    minTop: minTopHeight ?? '0px',
-    minBottom: minBottomHeight ?? '0px',
-  };
-  console.log(renderDimensions);
-
-  const renderSplitVisual =
-    renderSplitter ??
-    (() => {
-      return <DefaultSplitVisual className="default-split-visual" splitterHeight={currentSplitterHeight} />;
-    });
-
   return (
-    <Measure bounds onResize={onContentMeasure}>
-      {({ measureRef }) => (
-        <FullDiv ref={measureRef}>
-          <Root
-            topHeight={renderDimensions.top}
-            splitterHeight={splitterHeight}
-            minTopHeight={renderDimensions.minTop}
-            minBottomHeight={renderDimensions.minBottom}
-          >
-            <Top>
-              <Measure bounds onResize={onTopMeasure}>
-                {({ measureRef: topRef }) => <FullDiv ref={topRef}>{topChild}</FullDiv>}
-              </Measure>
-            </Top>
-            <Split
-              tabIndex={-1}
-              onPointerDown={onSplitPointerDown}
-              onPointerUp={onSplitPointerUp}
-              onPointerMove={onSplitPointerMove}
-              onDoubleClick={onSplitDoubleClick}
-            >
-              <Measure bounds onResize={onSplitterMeasure}>
-                {({ measureRef: splitterRef }) => <FullDiv ref={splitterRef}>{renderSplitVisual()}</FullDiv>}
-              </Measure>
-            </Split>
-            <Bottom>{bottomChild}</Bottom>
-          </Root>
-        </FullDiv>
-      )}
-    </Measure>
+    <Split
+      horizontal={true}
+      initialPrimarySize={props.initialTopHeight}
+      minPrimarySize={props.minTopHeight}
+      minSecondarySize={props.minBottomHeight}
+      splitterSize={props.splitterHeight}
+      renderSplitter={props.renderSplitter}
+      resetOnDoubleClick={props.resetOnDoubleClick}
+      defaultSplitterColors={props.defaultSplitterColors}
+    >
+      {props.children}
+    </Split>
   );
 };

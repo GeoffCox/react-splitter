@@ -15,7 +15,7 @@ export const createSplitOptions = atom<SplitOptions>({
     initialPrimaryExtent: '50%',
     minPrimaryExtent: '0px',
     minSecondaryExtent: '0px',
-    splitterExtent: '6px',
+    splitterExtent: '7px',
     splitterType: 'default',
   },
 });

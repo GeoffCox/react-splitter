@@ -25,7 +25,7 @@ const Root = styled.div`
 const PropertyGrid = styled.div`
   display: grid;
   grid-template-columns: minmax(175px, auto) auto;
-  grid-auto-flow: rows;
+  grid-auto-flow: row;
   align-content: start;
   justify-content: start;
   margin: 20px;
