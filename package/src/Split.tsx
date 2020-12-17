@@ -108,7 +108,6 @@ export type SplitProps = {
    * Set to false to create a left|right split.
    */
   horizontal?: boolean;
-
   /**
    * The initial width/height of the left/top pane.
    * Width is specified as a CSS unit (e.g. %, fr, px)

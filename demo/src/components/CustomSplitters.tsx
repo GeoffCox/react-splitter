@@ -7,13 +7,13 @@ const fullDivCss = css`
   overflow: hidden;
 `;
 
-export const LeftRightSolidSplitter = styled.div`
+export const VerticalSolidSplitter = styled.div`
   ${fullDivCss}
   background: silver;
   cursor: col-resize;
 `;
 
-export const TopBottomSolidSplitter = styled.div`
+export const HorizontalSolidSplitter = styled.div`
   ${fullDivCss}
   background: silver;
   cursor: row-resize;
@@ -26,7 +26,7 @@ const stripeVars = css`
   --duration: 2s;
 `;
 
-const leftRightStripeAnimation = keyframes`
+const verticalStripeAnimation = keyframes`
   ${stripeVars}
   0% {
     transform: translateX(0);
@@ -36,7 +36,7 @@ const leftRightStripeAnimation = keyframes`
   }
 `;
 
-export const LeftRightStripeSplitter = styled.div`
+export const VerticalStripedSplitter = styled.div`
   ${stripeVars}
 
   position: relative;
@@ -61,7 +61,7 @@ export const LeftRightStripeSplitter = styled.div`
       var(--color1) 75%
     );
     background-size: var(--stripe-size) var(--stripe-size);
-    animation: ${leftRightStripeAnimation} var(--duration) linear infinite;
+    animation: ${verticalStripeAnimation} var(--duration) linear infinite;
   }
 
   &::after {
@@ -73,7 +73,7 @@ export const LeftRightStripeSplitter = styled.div`
   }
 `;
 
-const topBottomStripeAnimation = keyframes`
+const horizontalStripeAnimation = keyframes`
   ${stripeVars}
   0% {
     transform: translateX(calc(var(--stripe-size) * -1));
@@ -83,7 +83,7 @@ const topBottomStripeAnimation = keyframes`
   }
 `;
 
-export const TopBottomStripeSplitter = styled.div`
+export const HorizontalStripedSplitter = styled.div`
   ${stripeVars}
 
   position: relative;
@@ -108,7 +108,7 @@ export const TopBottomStripeSplitter = styled.div`
       var(--color1) 75%
     );
     background-size: var(--stripe-size) var(--stripe-size);
-    animation: ${topBottomStripeAnimation} var(--duration) linear infinite;
+    animation: ${horizontalStripeAnimation} var(--duration) linear infinite;
   }
 
   &::after {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRecoilState } from 'recoil';
 import styled, { css } from 'styled-components';
 import { createSplitOptions } from '../model/appModel';
-import { SplitDirection, SplitterType } from '../model/types';
+import { SplitterType } from '../model/types';
 import { LeftRight5050LayoutIcon, TopBottom5050LayoutIcon } from './LayoutIcons';
 
 const fullDivCss = css`
@@ -62,75 +62,52 @@ const SplitDirectionIcon = styled.div`
   height: 50px;
 `;
 
-const leftRightLabels = {
-  initialPrimaryExtent: 'Initial Left Width',
-  minPrimaryExtent: 'Minimum Left Width',
-  minSecondaryExtent: 'Minimum Right Width',
-  splitterExtent: 'Splitter Width',
-};
-
-const topBottomLabels = {
-  initialPrimaryExtent: 'Initial Top Height',
-  minPrimaryExtent: 'Minimum Top Height',
-  minSecondaryExtent: 'Minimum Bottom Height',
-  splitterExtent: 'Splitter Height',
-};
-
 export const SplitOptionsEditor = () => {
   const [options, setOptions] = useRecoilState(createSplitOptions);
 
-  const onSplitDrectionChanged = (value: string) => {
+  const onHorizontalChanged = (horizontal: boolean) => {
     setOptions({
       ...options,
-      splitDirection: value as SplitDirection,
+      horizontal,
     });
   };
 
-  const onInitialPrimaryExtentChanged = (value: string) => {
+  const onInitialPrimarySizeChanged = (initialPrimarySize: string) => {
     setOptions({
       ...options,
-      initialPrimaryExtent: value,
+      initialPrimarySize,
     });
   };
 
-  const onMinPrimaryExtentChanged = (value: string) => {
+  const onMinPrimarySizeChanged = (minPrimarySize: string) => {
     setOptions({
       ...options,
-      minPrimaryExtent: value,
+      minPrimarySize,
     });
   };
 
-  const onMinSecondaryExtentChanged = (value: string) => {
+  const onMinSecondarySizeChanged = (minSecondarySize: string) => {
     setOptions({
       ...options,
-      minSecondaryExtent: value,
+      minSecondarySize,
     });
   };
 
-  const onSplitterExtentChanged = (value: string) => {
+  const onSplitterSizeChanged = (splitterSize: string) => {
     setOptions({
       ...options,
-      splitterExtent: value,
+      splitterSize,
     });
   };
 
-  const onCustomSplitterChanged = (value: string) => {
+  const onSplitterTypeChanged = (splitterType: string) => {
     setOptions({
       ...options,
-      splitterType: value as SplitterType,
+      splitterType: splitterType as SplitterType,
     });
   };
 
-  const {
-    splitDirection,
-    initialPrimaryExtent,
-    minPrimaryExtent,
-    minSecondaryExtent,
-    splitterExtent,
-    splitterType,
-  } = options;
-
-  const labels = splitDirection === 'TB' ? topBottomLabels : leftRightLabels;
+  const { horizontal, initialPrimarySize, minPrimarySize, minSecondarySize, splitterSize, splitterType } = options;
 
   return (
     <Root>
@@ -143,8 +120,8 @@ export const SplitOptionsEditor = () => {
               type="radio"
               id="LeftRightRadio"
               value="LR"
-              checked={splitDirection === 'LR'}
-              onChange={(e) => onSplitDrectionChanged(e.target.value)}
+              checked={!horizontal}
+              onChange={(e) => onHorizontalChanged(!e.target.checked)}
             />
             <label htmlFor="LeftRightRadio">
               <SplitDirectionIcon>
@@ -158,8 +135,8 @@ export const SplitOptionsEditor = () => {
               type="radio"
               id="TopBottomRadio"
               value="TB"
-              checked={splitDirection === 'TB'}
-              onChange={(e) => onSplitDrectionChanged(e.target.value)}
+              checked={horizontal}
+              onChange={(e) => onHorizontalChanged(e.target.checked)}
             />
             <label htmlFor="TopBottomRadio">
               <SplitDirectionIcon>
@@ -168,33 +145,33 @@ export const SplitOptionsEditor = () => {
             </label>
           </RadioOption>
         </RadioOptions>
-        <PropertyLabel htmlFor="InitialPrimary">{labels.initialPrimaryExtent}</PropertyLabel>
+        <PropertyLabel htmlFor="InitialPrimarySize">Initial Primary Size</PropertyLabel>
         <PropertyInput
-          id="InitialPrimary"
+          id="InitialPrimarySize"
           type="text"
-          value={initialPrimaryExtent}
-          onChange={(e) => onInitialPrimaryExtentChanged(e.target.value)}
+          value={initialPrimarySize}
+          onChange={(e) => onInitialPrimarySizeChanged(e.target.value)}
         />
-        <PropertyLabel htmlFor="MinPrimary">{labels.minPrimaryExtent}</PropertyLabel>
+        <PropertyLabel htmlFor="MinPrimarySize">Min Primary Size</PropertyLabel>
         <PropertyInput
-          id="MinPrimary"
+          id="MinPrimarySize"
           type="text"
-          value={minPrimaryExtent}
-          onChange={(e) => onMinPrimaryExtentChanged(e.target.value)}
+          value={minPrimarySize}
+          onChange={(e) => onMinPrimarySizeChanged(e.target.value)}
         />
-        <PropertyLabel htmlFor="MinSecondary">{labels.minSecondaryExtent}</PropertyLabel>
+        <PropertyLabel htmlFor="MinSecondarySize">Min Secondary Size</PropertyLabel>
         <PropertyInput
-          id="MinSecondary"
+          id="MinSecondarySize"
           type="text"
-          value={minSecondaryExtent}
-          onChange={(e) => onMinSecondaryExtentChanged(e.target.value)}
+          value={minSecondarySize}
+          onChange={(e) => onMinSecondarySizeChanged(e.target.value)}
         />
-        <PropertyLabel htmlFor="SplitterExtent">{labels.splitterExtent}</PropertyLabel>
+        <PropertyLabel htmlFor="SplitterSize">Splitter Size</PropertyLabel>
         <PropertyInput
-          id="SplitterExtent"
+          id="SplitterSize"
           type="text"
-          value={splitterExtent}
-          onChange={(e) => onSplitterExtentChanged(e.target.value)}
+          value={splitterSize}
+          onChange={(e) => onSplitterSizeChanged(e.target.value)}
         />
         <PropertyLabel>Splitter Type</PropertyLabel>
         <RadioOptions>
@@ -204,7 +181,7 @@ export const SplitOptionsEditor = () => {
               type="radio"
               value={'default'}
               checked={splitterType === 'default'}
-              onChange={(e) => onCustomSplitterChanged(e.target.value)}
+              onChange={(e) => onSplitterTypeChanged(e.target.value)}
             />
             <label htmlFor="DefaultSplitter">Default</label>
           </RadioOption>
@@ -214,7 +191,7 @@ export const SplitOptionsEditor = () => {
               type="radio"
               value={'solid'}
               checked={splitterType === 'solid'}
-              onChange={(e) => onCustomSplitterChanged(e.target.value)}
+              onChange={(e) => onSplitterTypeChanged(e.target.value)}
             />
             <label htmlFor="SolidSplitter">Solid</label>
           </RadioOption>
@@ -224,7 +201,7 @@ export const SplitOptionsEditor = () => {
               type="radio"
               value={'striped'}
               checked={splitterType === 'striped'}
-              onChange={(e) => onCustomSplitterChanged(e.target.value)}
+              onChange={(e) => onSplitterTypeChanged(e.target.value)}
             />
             <label htmlFor="StripedSplitter">Striped</label>
           </RadioOption>

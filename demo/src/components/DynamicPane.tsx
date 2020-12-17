@@ -1,17 +1,16 @@
 import * as React from 'react';
-// import { LeftRightSplit, TopBottomSplit } from "@geoffcox/react-splitter";
-import { LeftRightSplit } from '../../../package/src/LeftRightSplit';
-import { TopBottomSplit } from '../../../package/src/TopBottomSplit';
+// import { Split } from "@geoffcox/react-splitter";
+import { Split } from '../../../package/src/Split';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { useRecoilCallback, useRecoilState, useRecoilValue } from 'recoil';
 import { createSplitOptions, splitStateFamily } from '../model/appModel';
 import { SplitNode } from '../model/types';
 import {
-  LeftRightSolidSplitter,
-  LeftRightStripeSplitter,
-  TopBottomSolidSplitter,
-  TopBottomStripeSplitter,
+  VerticalSolidSplitter,
+  VerticalStripedSplitter,
+  HorizontalSolidSplitter,
+  HorizontalStripedSplitter,
 } from './CustomSplitters';
 
 const fullDivCss = css`
@@ -123,9 +122,9 @@ export const DynamicPane = (props: Props) => {
   const getLeftRightRenderSplitterCallback = () => {
     switch (options?.splitterType) {
       case 'solid':
-        return () => <LeftRightSolidSplitter />;
+        return () => <VerticalSolidSplitter />;
       case 'striped':
-        return () => <LeftRightStripeSplitter />;
+        return () => <VerticalStripedSplitter />;
       default:
         return undefined;
     }
@@ -134,17 +133,17 @@ export const DynamicPane = (props: Props) => {
   const renderLeftRightSplit = () => {
     return (
       options && (
-        <LeftRightSplit
-          initialLeftWidth={options.initialPrimaryExtent}
-          minLeftWidth={options.minPrimaryExtent}
-          minRightWidth={options.minSecondaryExtent}
+        <Split
+          initialPrimarySize={options.initialPrimarySize}
+          minPrimarySize={options.minPrimarySize}
+          minSecondarySize={options.minSecondarySize}
           renderSplitter={getLeftRightRenderSplitterCallback()}
-          splitterWidth={options.splitterExtent}
-          resetOnDoubleClick={true}
+          splitterSize={options.splitterSize}
+          resetOnDoubleClick
         >
           {primaryId ? <DynamicPane id={primaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
           {secondaryId ? <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
-        </LeftRightSplit>
+        </Split>
       )
     );
   };
@@ -152,9 +151,9 @@ export const DynamicPane = (props: Props) => {
   const getTopBottomRenderSplitterCallback = () => {
     switch (options?.splitterType) {
       case 'solid':
-        return () => <TopBottomSolidSplitter />;
+        return () => <HorizontalSolidSplitter />;
       case 'striped':
-        return () => <TopBottomStripeSplitter />;
+        return () => <HorizontalStripedSplitter />;
       default:
         return undefined;
     }
@@ -162,29 +161,23 @@ export const DynamicPane = (props: Props) => {
 
   const renderTopBottomSplit = () => {
     return (
-      <TopBottomSplit
-        initialTopHeight={options?.initialPrimaryExtent}
-        minTopHeight={options?.minPrimaryExtent}
-        minBottomHeight={options?.minSecondaryExtent}
+      <Split
+        horizontal
+        initialPrimarySize={options?.initialPrimarySize}
+        minPrimarySize={options?.minPrimarySize}
+        minSecondarySize={options?.minSecondarySize}
         renderSplitter={getTopBottomRenderSplitterCallback()}
-        splitterHeight={options?.splitterExtent}
-        resetOnDoubleClick={true}
+        splitterSize={options?.splitterSize}
+        resetOnDoubleClick
       >
         {primaryId ? <DynamicPane id={primaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
         {secondaryId ? <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
-      </TopBottomSplit>
+      </Split>
     );
   };
 
   const renderLayout = () => {
-    switch (options?.splitDirection) {
-      case 'TB':
-        return renderTopBottomSplit();
-      case 'LR':
-        return renderLeftRightSplit();
-      default:
-        return renderActions();
-    }
+    return options ? (options.horizontal ? renderTopBottomSplit() : renderLeftRightSplit()) : renderActions();
   };
 
   return <Root>{renderLayout()}</Root>;

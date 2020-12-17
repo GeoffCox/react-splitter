@@ -11,11 +11,11 @@ export const splitStateFamily = atomFamily<SplitNode, string>({
 export const createSplitOptions = atom<SplitOptions>({
   key: 'createSplitOptions',
   default: {
-    splitDirection: 'LR',
-    initialPrimaryExtent: '50%',
-    minPrimaryExtent: '0px',
-    minSecondaryExtent: '0px',
-    splitterExtent: '7px',
+    horizontal: false,
+    initialPrimarySize: '50%',
+    minPrimarySize: '0px',
+    minSecondarySize: '0px',
+    splitterSize: '7px',
     splitterType: 'default',
   },
 });

@@ -1,13 +1,8 @@
-export type SplitDirection = 'LR' | 'TB' | undefined;
+import { SplitProps } from '../../../package/src/Split';
 
 export type SplitterType = 'default' | 'solid' | 'striped';
 
-export type SplitOptions = {
-  splitDirection: SplitDirection;
-  initialPrimaryExtent: string;
-  minPrimaryExtent: string;
-  minSecondaryExtent: string;
-  splitterExtent: string;
+export type SplitOptions = SplitProps & {
   splitterType: SplitterType;
 };
 
