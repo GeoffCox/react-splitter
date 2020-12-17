@@ -1,6 +1,6 @@
 import * as React from 'react';
-// import { Split } from "@geoffcox/react-splitter";
-import { Split } from '../../../package/src/Split';
+import { Split } from '@geoffcox/react-splitter';
+//import { Split } from '../../../package/src/Split';
 import styled, { css } from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 import { useRecoilCallback, useRecoilState, useRecoilValue } from 'recoil';

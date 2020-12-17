@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { RenderSplitterProps } from './Split';
+import { RenderSplitterProps } from './RenderSplitterProps';
 
 type Props = RenderSplitterProps & {
   color: string;

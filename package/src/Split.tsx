@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled, { css } from 'styled-components';
 import { default as Measure, ContentRect } from 'react-measure';
 import { DefaultSplitter } from './DefaultSplitter';
+import { RenderSplitterProps } from './RenderSplitterProps';
 
 const stdDivCss = css`
   box-sizing: border-box;
@@ -86,21 +87,6 @@ const Secondary = styled.div.attrs(({ horizontal }: { horizontal: boolean }): an
   overflow: hidden;
   grid-area: secondary;
 `;
-
-export type RenderSplitterProps = {
-  /**
-   * The measured size of the splitter in pixels.
-   */
-  pixelSize: number;
-  /**
-   * True if the splitter is horizontal (i.e. top/bottom); false otherwise.
-   */
-  horizontal: boolean;
-  /**
-   * True if the user is currently dragging the splitter; false otherwise.
-   */
-  dragging: boolean;
-};
 
 export type SplitProps = {
   /**
