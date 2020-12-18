@@ -215,5 +215,5 @@ If you overcome these limitations in your own code, pull requests are appreciate
 - Added customization control to the demo
 - Moved default splitter to separate module
 
-# 2.0.1 - Reduce size
+## 2.0.1 - Reduce size
 - Removed map files from distribution
