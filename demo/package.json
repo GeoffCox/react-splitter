@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-dev": "webpack --config webpack.config.js --mode development",
-    "build-prod": "webpack --config webpack.config.js --mode production"
+    "build:dev": "webpack --config webpack.config.js --mode development",
+    "build:prod": "webpack --config webpack.config.js --mode production"
   },
   "author": "",
   "license": "ISC",
@@ -22,7 +22,7 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "@geoffcox/react-splitter": "^2.0.0",
+    "@geoffcox/react-splitter": "^2.0.2",
     "@types/recoil": "0.0.1",
     "@types/styled-components": "4.1.8",
     "css-loader": "^3.5.3",
