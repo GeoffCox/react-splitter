@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { default as Measure, ContentRect } from 'react-measure';
 import { DefaultSplitter } from './DefaultSplitter';
 import { RenderSplitterProps } from './RenderSplitterProps';
+import { useDebounce } from './useDebounceHook';
 
 const stdDivCss = css`
   box-sizing: border-box;
@@ -88,6 +89,21 @@ const Secondary = styled.div.attrs(({ horizontal }: { horizontal: boolean }): an
   grid-area: secondary;
 `;
 
+export type SplitMeasuredSizes = {
+  /**
+   * The measured size of the primary pane in pixels.
+   */
+  primary: number;
+  /**
+   * The measured size of the splitter in pixels.
+   */
+  splitter: number;
+  /**
+   * The measured size of the secondary pane in pixels.
+   */
+  secondary: number;
+};
+
 export type SplitProps = {
   /**
    * Add this attribute or set to true to create a top/bottom split.
@@ -96,22 +112,26 @@ export type SplitProps = {
   horizontal?: boolean;
   /**
    * The initial width/height of the left/top pane.
-   * Width is specified as a CSS unit (e.g. %, fr, px)
+   * Width is specified as a CSS unit (e.g. %, fr, px).
+   * The default is 50%.
    */
   initialPrimarySize?: string;
   /**
    * The preferred minimum width/height of the left/top pane.
-   * Specified as a CSS unit (e.g. %, fr, px)
+   * Specified as a CSS unit (e.g. %, fr, px).
+   * The default is 0.
    */
   minPrimarySize?: string;
   /**
    * The preferred minimum width/height of the right/bottom pane.
-   * Specified as a CSS unit (e.g. %, fr, px)
+   * Specified as a CSS unit (e.g. %, fr, px).
+   * The default is 0.
    */
   minSecondarySize?: string;
   /**
-   * The width of the splitter between the left and right panes.
-   * Specified as a CSS unit (e.g. %, fr, px)
+   * The width of the splitter between the panes.
+   * Specified as a CSS unit (e.g. %, fr, px).
+   * The default is 7px.
    */
   splitterSize?: string;
   /**
@@ -135,12 +155,25 @@ export type SplitProps = {
     hover: string;
     drag: string;
   };
+
+  /**
+   * Raised when the splitter moves to provide the primary size.
+   * When the user has adjusted the splitter, this will be a percentage.
+   * Otherwise, this will be the initialPrimarySize.
+   */
+  onSplitChanged?: (primarySize: string) => void;
+
+  /**
+   * Raised whenever the primary, splitter, or secondary measured sizes change.
+   * These values are debounced at 500ms to prevent spamming this event.
+   */
+  onMeasuredSizesChanged?: (sizes: SplitMeasuredSizes) => void;
 };
 
 export const Split = (props: React.PropsWithChildren<SplitProps>) => {
   const {
     horizontal = false,
-    initialPrimarySize,
+    initialPrimarySize = '50%',
     minPrimarySize = '0px',
     minSecondarySize = '0px',
     splitterSize = '7px',
@@ -151,10 +184,12 @@ export const Split = (props: React.PropsWithChildren<SplitProps>) => {
       hover: 'gray',
       drag: 'black',
     },
+    onSplitChanged,
+    onMeasuredSizesChanged,
   } = props;
 
   const [currentContentSize, setCurrentContentSize] = React.useState<number>(0);
-  const [currentLeftSize, setCurrentLeftSize] = React.useState<number>(0);
+  const [currentPrimarySize, setCurrentPrimarySize] = React.useState<number>(0);
   const [currentSplitterSize, setCurrentSplitterSize] = React.useState<number>(0);
 
   const [percent, setPercent] = React.useState<number | undefined>(undefined);
@@ -163,12 +198,32 @@ export const Split = (props: React.PropsWithChildren<SplitProps>) => {
   const [primaryStart, setPrimaryStart] = React.useState(0);
   const [dragging, setDragging] = React.useState(false);
 
+  const debouncedContentSize = useDebounce(currentContentSize, 500);
+  const debouncedPrimarySize = useDebounce(currentPrimarySize, 500);
+  const debouncedSplitterSize = useDebounce(currentSplitterSize, 500);
+
+  React.useEffect(() => {
+    if (onSplitChanged) {
+      onSplitChanged(percent !== undefined ? `${percent}%` : initialPrimarySize);
+    }
+  }, [percent, initialPrimarySize]);
+
+  React.useEffect(() => {
+    if (onMeasuredSizesChanged) {
+      onMeasuredSizesChanged({
+        primary: debouncedPrimarySize,
+        splitter: debouncedSplitterSize,
+        secondary: debouncedContentSize - (debouncedPrimarySize + debouncedSplitterSize),
+      });
+    }
+  }, [debouncedContentSize, debouncedPrimarySize, debouncedSplitterSize]);
+
   const onMeasureContent = (contentRect: ContentRect) => {
     contentRect.bounds && setCurrentContentSize(horizontal ? contentRect.bounds.height : contentRect.bounds.width);
   };
 
   const onMeasurePrimary = (contentRect: ContentRect) => {
-    contentRect.bounds && setCurrentLeftSize(horizontal ? contentRect.bounds.height : contentRect.bounds.width);
+    contentRect.bounds && setCurrentPrimarySize(horizontal ? contentRect.bounds.height : contentRect.bounds.width);
   };
 
   const onMeasureSplitter = (contentRect: ContentRect) => {
@@ -178,7 +233,7 @@ export const Split = (props: React.PropsWithChildren<SplitProps>) => {
   const onSplitPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     event.currentTarget.setPointerCapture(event.pointerId);
     setClientStart(horizontal ? event.clientY : event.clientX);
-    setPrimaryStart(currentLeftSize);
+    setPrimaryStart(currentPrimarySize);
     setDragging(true);
   };
 

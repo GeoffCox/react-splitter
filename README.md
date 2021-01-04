@@ -138,6 +138,26 @@ export type RenderSplitterProps = {
   dragging: boolean;
 };
 ```
+
+## Monitor changes
+You can use event callbacks to monitor changes to the primary size and the measured sizes. The primary size is a CSS unit string (percentage or initial size). The measured sizes are pixels sizes.
+
+```tsx
+const onSplitChanged = (primarySize: string) => {
+  console.log(`The split is: ${primarySize}`);
+};
+
+const onMeasuredSizesChanged = (sizes: SplitMeasuredPixelSizes) => {
+  console.log(`The primary pane is: ${sizes.primary}px`);
+  console.log(`The splitter is: ${sizes.splitter}px`);
+  console.log(`The secondary pane is: ${sizes.secondary}px`);
+};
+
+<Split onSplitChanged={onSplitChanged} onMeasuredSizesChanged={onMeasuredSizesChanged}>
+  <div>Primary pane</div>
+  <div>Secondary pane<div>
+</Split>
+```
 # Integrating into a web application
 
 If you are using a style framework like Fluent, Material UI, or Bootstrap then your root div will likely have CSS styles applied that help this splitter work correctly.
@@ -217,3 +237,7 @@ If you overcome these limitations in your own code, pull requests are appreciate
 
 ## 2.0.1 - Reduce size
 - Removed map files from distribution
+
+## 2.0.2 - Provide events
+- Added onSplitChanged to provide the primarySize as the splitter changes.
+- Added onMeasuredSizesChanged to provide content, left pane, splitter, and right pane pixels sizes as the splitter changes.
