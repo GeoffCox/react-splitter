@@ -223,7 +223,7 @@ If you overcome these limitations in your own code, pull requests are appreciate
 - Updated demo to optionally show custom rendered splitter
 - Fixed bug with cursor on top/bottom splitter
 
-## 2.0.0 - Overhaul
+## 2.0.0 - Overhauled
 - Collapsed LeftRightSplit and TopBottomSplit into a single Split component
 - Leveraged minmax to remove the need for any complex math
 - Changed mouse events to pointer events for improved responsiveness
@@ -235,9 +235,13 @@ If you overcome these limitations in your own code, pull requests are appreciate
 - Added customization control to the demo
 - Moved default splitter to separate module
 
-## 2.0.1 - Reduce size
+## 2.0.1 - Reduced size
 - Removed map files from distribution
 
-## 2.0.2 - Provide events
+## 2.0.2 - Provided events
 - Added onSplitChanged to provide the primarySize as the splitter changes.
 - Added onMeasuredSizesChanged to provide content, left pane, splitter, and right pane pixels sizes as the splitter changes.
+
+## 2.0.3 - Bug fixes
+- Export RenderSplitterProps from package
+- Export DefaultSplitter from package

@@ -241,3 +241,7 @@ If you overcome these limitations in your own code, pull requests are appreciate
 ## 2.0.2 - Provide events
 - Added onSplitChanged to provide the primarySize as the splitter changes.
 - Added onMeasuredSizesChanged to provide content, left pane, splitter, and right pane pixels sizes as the splitter changes.
+
+## 2.0.3 - Bug fixes
+- Export RenderSplitterProps from package
+- Export DefaultSplitter from package

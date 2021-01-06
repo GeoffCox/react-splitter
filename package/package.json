@@ -1,6 +1,6 @@
 {
   "name": "@geoffcox/react-splitter",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A splitter for React components that leverages CSS grid templates for simple and consistent resizing.",
   "main": "build/index.js",
   "module": "build/index.es.js",
