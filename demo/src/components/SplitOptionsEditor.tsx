@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 import styled, { css } from 'styled-components';
 import { createSplitOptions } from '../model/appModel';
 import { SplitterType } from '../model/types';
-import { LeftRight5050LayoutIcon, TopBottom5050LayoutIcon } from './LayoutIcons';
+import { LeftRightLayoutIcon, TopBottomLayoutIcon } from './LayoutIcons';
 
 const fullDivCss = css`
   width: 100%;
@@ -15,8 +15,6 @@ const fullDivCss = css`
 const Root = styled.div`
   ${fullDivCss}
   display: grid;
-  font-family: 'Consolas', 'Courier New', Courier, monospace;
-  font-size: 10pt;
   grid-template-rows: auto auto 1fr;
   grid-template-columns: 1fr;
   grid-template-areas: 'header' 'options' 'content';
@@ -62,6 +60,9 @@ const SplitDirectionIcon = styled.div`
   height: 50px;
 `;
 
+/**
+ * A form to allows the user to set the different options for new splits.
+ */
 export const SplitOptionsEditor = () => {
   const [options, setOptions] = useRecoilState(createSplitOptions);
 
@@ -125,7 +126,7 @@ export const SplitOptionsEditor = () => {
             />
             <label htmlFor="LeftRightRadio">
               <SplitDirectionIcon>
-                <LeftRight5050LayoutIcon />
+                <LeftRightLayoutIcon />
               </SplitDirectionIcon>
             </label>
           </RadioOption>
@@ -140,7 +141,7 @@ export const SplitOptionsEditor = () => {
             />
             <label htmlFor="TopBottomRadio">
               <SplitDirectionIcon>
-                <TopBottom5050LayoutIcon />
+                <TopBottomLayoutIcon />
               </SplitDirectionIcon>
             </label>
           </RadioOption>

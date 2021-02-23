@@ -43,7 +43,6 @@ const Splitter = styled.div.attrs(
   width: ${(props) => props.width};
   margin-left: ${(props) => props.marginLeft};
   margin-top: ${(props) => props.marginTop};
-
   background: ${(props) => props.color};
 `;
 

@@ -56,7 +56,10 @@ const TopBottomLayout = styled.div.attrs(
   grid-template-columns: 1fr;
 `;
 
-export const LeftRight5050LayoutIcon = () => {
+/**
+ * The icon representing a left|right split.
+ */
+export const LeftRightLayoutIcon = () => {
   return (
     <Root>
       <LeftRightLayout leftWidth="50%" rightWidth="50%">
@@ -68,7 +71,10 @@ export const LeftRight5050LayoutIcon = () => {
   );
 };
 
-export const TopBottom5050LayoutIcon = () => {
+/**
+ * The icon representing a top/bottom split.
+ */
+export const TopBottomLayoutIcon = () => {
   return (
     <Root>
       <TopBottomLayout topHeight="50%" bottomHeight="50%">

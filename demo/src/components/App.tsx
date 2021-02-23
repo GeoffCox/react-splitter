@@ -8,11 +8,14 @@ const Root = styled.div`
   height: 100%;
   outline: none;
   overflow: hidden;
-  font-family: 'Consolas', 'Courier New', Courier, monospace;
-  font-size: 10pt;
 `;
 
+/**
+ * The root user interface of the application.
+ */
 export const App = () => {
+  // This demo leverages recoil for application state management.
+  // Recoil is NOT a requirement to use the react-splitter.
   return (
     <Root>
       <RecoilRoot>

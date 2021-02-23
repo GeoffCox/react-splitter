@@ -1,6 +1,9 @@
 import { atom, atomFamily } from 'recoil';
 import { SplitNode, SplitOptions } from './types';
 
+/**
+ * The state of each split by pane ID.
+ */
 export const splitStateFamily = atomFamily<SplitNode, string>({
   key: 'splitStateFamily',
   default: (id) => {
@@ -8,6 +11,9 @@ export const splitStateFamily = atomFamily<SplitNode, string>({
   },
 });
 
+/**
+ * The current split options for new splits.
+ */
 export const createSplitOptions = atom<SplitOptions>({
   key: 'createSplitOptions',
   default: {

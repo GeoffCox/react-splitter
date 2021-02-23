@@ -7,16 +7,13 @@ const fullDivCss = css`
   overflow: hidden;
 `;
 
-export const VerticalSolidSplitter = styled.div`
+/**
+ * A splitter with a solid background taking up the full hit area.
+ */
+export const SolidSplitter = styled.div`
   ${fullDivCss}
   background: silver;
   cursor: col-resize;
-`;
-
-export const HorizontalSolidSplitter = styled.div`
-  ${fullDivCss}
-  background: silver;
-  cursor: row-resize;
 `;
 
 const stripeVars = css`
@@ -36,6 +33,19 @@ const verticalStripeAnimation = keyframes`
   }
 `;
 
+const horizontalStripeAnimation = keyframes`
+  ${stripeVars}
+  0% {
+    transform: translateX(calc(var(--stripe-size) * -1));
+  }
+  100% {
+    transform: translateX(0);
+  }
+`;
+
+/**
+ * An animated, striped splitter for left|right splits.
+ */
 export const VerticalStripedSplitter = styled.div`
   ${stripeVars}
 
@@ -73,16 +83,9 @@ export const VerticalStripedSplitter = styled.div`
   }
 `;
 
-const horizontalStripeAnimation = keyframes`
-  ${stripeVars}
-  0% {
-    transform: translateX(calc(var(--stripe-size) * -1));
-  }
-  100% {
-    transform: translateX(0);
-  }
-`;
-
+/**
+ * An animated, striped splitter for top/bottom splits.
+ */
 export const HorizontalStripedSplitter = styled.div`
   ${stripeVars}
 

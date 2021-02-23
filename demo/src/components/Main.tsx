@@ -13,8 +13,6 @@ const fullDivCss = css`
 const Root = styled.div`
   ${fullDivCss}
   display: grid;
-  font-family: 'Consolas', 'Courier New', Courier, monospace;
-  font-size: 10pt;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr;
   grid-template-areas: 'header' 'content' 'footer';

@@ -12,10 +12,16 @@ body {
   margin: 0;
 }
 
+body, button {
+  font-family: 'Roboto', 'Segoe UI', Tahoma, 'Geneva', Verdana, sans-serif;
+  font-size: 10pt;
+}
+
 body,
 div {
   box-sizing: border-box;
 }
+
 
 #app {
   position: relative;
