@@ -245,3 +245,8 @@ If you overcome these limitations in your own code, pull requests are appreciate
 ## 2.0.3 - Bug fixes
 - Export RenderSplitterProps from package
 - Export DefaultSplitter from package
+
+## 2.1.0 - Remove styled-components dependency
+- Updated the Split and DefaultSplitter React components to use CSS variables rather than take a dependency on styled-components
+- Switched from rollup to webpack to support CSS-in-JS without requiring styled-components
+- Updated all HTML elements in Split with semantic class names.

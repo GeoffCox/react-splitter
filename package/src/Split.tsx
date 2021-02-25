@@ -86,7 +86,7 @@ export type SplitProps = {
   onMeasuredSizesChanged?: (sizes: SplitMeasuredSizes) => void;
 };
 
-export const Split = (props: React.PropsWithChildren<SplitProps>) => {
+export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element => {
   const {
     horizontal = false,
     initialPrimarySize = '50%',

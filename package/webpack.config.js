@@ -1,6 +1,4 @@
-const { join } = require("path");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const HtmlWebpackTemplate = require("html-webpack-template");
+const { join, resolve } = require("path");
 var webpack = require('webpack');
 
 // package.json contains the version number of the dependencies
@@ -29,10 +27,21 @@ module.exports = {
   // assume a corresponding global variable exists and use that instead.
   // This is important because it allows us to avoid bundling all of our
   // dependencies, which allows browsers to cache standard libraries like React once.
-  // externals: {
-  //   "react": "React",
-  //   "react-dom": "ReactDOM"
-  // },
+  externals: {
+    'react': {
+      'commonjs': 'react',
+      'commonjs2': 'react',
+      'amd': 'react',
+      // React dep should be available as window.React, not window.react
+      'root': 'React'
+    },
+    'react-dom': {
+      'commonjs': 'react-dom',
+      'commonjs2': 'react-dom',
+      'amd': 'react-dom',
+      'root': 'ReactDOM'
+    }
+  },
 
   // When the env is "development", this tells webpack to provide debuggable information in the source maps and turns off some optimizations.
   mode: process.env.NODE_ENV,
@@ -63,26 +72,22 @@ module.exports = {
   // Tells webpack where to output the bundled javascript
   output: {
     filename: "index.js",
-    path: join(__dirname, "dist")
+    library: 'ReactSplitter',
+    libraryTarget: 'umd',
+    umdNamedDefine: true,
+    path: join(__dirname, "build")
   },
 
   // Tells the HTML webpack plug-in to use a template and emit dist/index.html
   plugins: [
-    new HtmlWebpackPlugin({
-      title: "react-splitter demo",
-      inject: false,
-      template: HtmlWebpackTemplate,
-      appMountId: "app",
-      scripts: [
-        // `https://unpkg.com/react@${packageJson.dependencies['react']}/umd/react.production.min.js`,
-        // `https://unpkg.com/react-dom@${packageJson.dependencies['react-dom']}/umd/react-dom.production.min.js`,
-        'index.js'
-      ]
-    })
   ],
 
   // Tells webpack what file extesions it should look at.
   resolve: {
+    alias: {
+      'react': resolve(__dirname, './node_modules/react') ,
+      'react-dom': resolve(__dirname, './node_modules/react-dom'),
+    },
     extensions: [".ts", ".tsx", ".js", ".json"]
   }
 };

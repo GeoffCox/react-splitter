@@ -19,7 +19,7 @@ export const DefaultSplitter = (props: Props) => {
 
   const cssProperties = {
     '--default-splitter-line-margin': getCenteredMargin(pixelSize),
-    '--default-splitter-line-width': getThinLineSize(pixelSize),
+    '--default-splitter-line-size': getThinLineSize(pixelSize),
     '--default-splitter-line-color': dragging ? dragColor : color,
     '--default-splitter-line-hover-color': dragging ? dragColor : hoverColor,
   } as React.CSSProperties;

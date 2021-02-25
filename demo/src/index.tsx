@@ -2,7 +2,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { App } from './components/App';
 import './stylesheet.css';
-import '../../package/build/bundle.css';
 
 const appElement = document.getElementById('app');
 

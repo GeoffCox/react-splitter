@@ -3,7 +3,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "jsx": "react",
-    "module": "commonjs",
+    "module": "es6",
     "moduleResolution": "node",
     "outDir": "./dist/",
     "noFallthroughCasesInSwitch": true,
@@ -12,7 +12,7 @@
     "noUnusedParameters": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es6"
+    "target": "es2018"
   },
   "include": ["./src/**/*"],
   "exclude": ["node_modules", "dist"]
