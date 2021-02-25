@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "allowJs": false,
-    "baseUrl": ".",
     "declaration": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
-    "module": "esnext",
+    "module": "es6",
     "moduleResolution": "node",
     "outDir": "build",
     "noFallthroughCasesInSwitch": true,
@@ -16,14 +15,11 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noUnusedParameters": true,
-    "paths": {
-      "src/*": ["src/*"]
-    },
     "strictNullChecks": true,
     "sourceMap": true,
     "strict": true,
     "target": "es6"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "build", "demo"]
+  "include": ["./src/**/*"],
+  "exclude": ["node_modules", "build", "dist"]
 }

@@ -1,15 +1,14 @@
 {
   "name": "@geoffcox/react-splitter",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "A splitter for React components that leverages CSS grid templates for simple and consistent resizing.",
   "main": "build/index.js",
-  "module": "build/index.es.js",
-  "jsnext:main": "build/index.es.js",
   "files": [
     "build/"
   ],
   "scripts": {
-    "build": "rollup -c"
+    "build:dev": "webpack --config webpack.config.js --mode development",
+    "build:prod": "webpack --config webpack.config.js --mode production"
   },
   "author": "Geoff Cox",
   "license": "MIT",
@@ -30,24 +29,19 @@
     "@types/react": "^16.9.36",
     "@types/react-dom": "^16.9.8",
     "@types/react-measure": "^2.0.6",
-    "@types/react-test-renderer": "^16.9.2",
-    "@types/styled-components": "4.1.8",
-    "babel-plugin-styled-components": "^1.10.7",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "rollup": "^2.15.0",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.2",
-    "rollup-plugin-typescript2": "^0.27.1",
-    "typescript": "^3.7.5"
+    "awesome-typescript-loader": "^5.2.1",
+    "css-loader": "^3.5.3",
+    "source-map-loader": "^1.0.0",
+    "style-loader": "^1.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "dependencies": {
-    "react-measure": "^2.3.0",
-    "styled-components": "^5.1.1"
+    "react-measure": "^2.5.2"
   },
   "peerDependencies": {
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   }
 }

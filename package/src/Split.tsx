@@ -1,93 +1,9 @@
 import * as React from 'react';
-import styled, { css } from 'styled-components';
 import { default as Measure, ContentRect } from 'react-measure';
 import { DefaultSplitter } from './DefaultSplitter';
 import { RenderSplitterProps } from './RenderSplitterProps';
 import { useDebounce } from './useDebounceHook';
-
-const stdDivCss = css`
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-`;
-
-const fullDivCss = css`
-  ${stdDivCss}
-  width: 100%;
-  height: 100%;
-`;
-
-const FullDiv = styled.div`
-  ${fullDivCss}
-`;
-
-// To improve performance, the dynamic style feature of styled components puts the template row &columns into the style property.
-const Root = styled.div.attrs(
-  ({
-    horizontal,
-    primarySize,
-    splitterSize,
-    minPrimarySize,
-    minSecondarySize,
-  }: {
-    horizontal: boolean;
-    primarySize: string;
-    splitterSize: string;
-    minPrimarySize: string;
-    minSecondarySize: string;
-  }): any => ({
-    gridTemplateAreas: horizontal ? '"primary" "split" "secondary"' : '"primary split secondary"',
-    style: horizontal
-      ? {
-          gridTemplateColumns: '1fr',
-          gridTemplateRows: `minmax(${minPrimarySize},${primarySize}) ${splitterSize} minmax(${minSecondarySize}, 1fr)`,
-        }
-      : {
-          gridTemplateColumns: `minmax(${minPrimarySize},${primarySize}) ${splitterSize} minmax(${minSecondarySize}, 1fr)`,
-          gridTemplateRows: '1fr',
-        },
-  })
-)`
-  ${fullDivCss}
-  display: grid;
-  grid-template-areas: ${(props) => props.gridTemplateAreas};
-`;
-
-const Primary = styled.div.attrs(({ horizontal }: { horizontal: boolean }): any => ({
-  height: horizontal ? 'auto' : '100%',
-  width: horizontal ? '100%' : 'auto',
-}))`
-  ${stdDivCss}
-  height: ${(props) => props.height};
-  width: ${(props) => props.width};
-  grid-area: primary;
-`;
-
-const Splitter = styled.div.attrs(({ horizontal }: { horizontal: boolean }): any => ({
-  height: horizontal ? 'auto' : '100%',
-  width: horizontal ? '100%' : 'auto',
-  cursor: horizontal ? 'row-resize' : 'col-resize',
-}))`
-  ${stdDivCss}
-  height: ${(props) => props.height};
-  width: ${(props) => props.width};
-  cursor: ${(props) => props.cursor};
-  grid-area: split;
-  background: transparent;
-  user-select: none;
-`;
-
-const Secondary = styled.div.attrs(({ horizontal }: { horizontal: boolean }): any => ({
-  height: horizontal ? 'auto' : '100%',
-  width: horizontal ? '100%' : 'auto',
-}))`
-  height: ${(props) => props.height};
-  width: ${(props) => props.width};
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  grid-area: secondary;
-`;
+import './split.css';
 
 export type SplitMeasuredSizes = {
   /**
@@ -170,7 +86,7 @@ export type SplitProps = {
   onMeasuredSizesChanged?: (sizes: SplitMeasuredSizes) => void;
 };
 
-export const Split = (props: React.PropsWithChildren<SplitProps>) => {
+export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element => {
   const {
     horizontal = false,
     initialPrimarySize = '50%',
@@ -284,24 +200,31 @@ export const Split = (props: React.PropsWithChildren<SplitProps>) => {
       );
     });
 
+  const rootClassName = horizontal ? 'split-container horizontal' : 'split-container vertical';
+
+  const rootStyle = {
+    '--react-split-min-primary': renderSizes.minPrimary,
+    '--react-split-min-secondary': renderSizes.minSecondary,
+    '--react-split-primary': renderSizes.primary,
+    '--react-split-splitter': splitterSize,
+  } as React.CSSProperties;
+
   return (
     <Measure bounds onResize={onMeasureContent}>
       {({ measureRef: contentRef }) => (
-        <FullDiv ref={contentRef}>
-          <Root
-            horizontal={horizontal}
-            primarySize={renderSizes.primary}
-            splitterSize={splitterSize}
-            minPrimarySize={renderSizes.minPrimary}
-            minSecondarySize={renderSizes.minSecondary}
-          >
-            <Primary horizontal={horizontal}>
+        <div className="react-split" ref={contentRef}>
+          <div className={rootClassName} style={rootStyle}>
+            <div className="primary">
               <Measure bounds onResize={onMeasurePrimary}>
-                {({ measureRef: primaryRef }) => <FullDiv ref={primaryRef}>{primaryChild}</FullDiv>}
+                {({ measureRef: primaryRef }) => (
+                  <div className="full-content" ref={primaryRef}>
+                    {primaryChild}
+                  </div>
+                )}
               </Measure>
-            </Primary>
-            <Splitter
-              horizontal={horizontal}
+            </div>
+            <div
+              className="splitter"
               tabIndex={-1}
               onPointerDown={onSplitPointerDown}
               onPointerUp={onSplitPointerUp}
@@ -310,13 +233,17 @@ export const Split = (props: React.PropsWithChildren<SplitProps>) => {
             >
               <Measure bounds onResize={onMeasureSplitter}>
                 {({ measureRef: splitterRef }) => (
-                  <FullDiv ref={splitterRef}>{renderSplitVisual(renderSplitterProps)}</FullDiv>
+                  <div className="full-content" ref={splitterRef}>
+                    {renderSplitVisual(renderSplitterProps)}
+                  </div>
                 )}
               </Measure>
-            </Splitter>
-            <Secondary horizontal={horizontal}>{secondaryChild}</Secondary>
-          </Root>
-        </FullDiv>
+            </div>
+            <div className="secondary">
+              <div className="full-content">{secondaryChild}</div>
+            </div>
+          </div>
+        </div>
       )}
     </Measure>
   );

@@ -1,61 +1,32 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { RenderSplitterProps } from './RenderSplitterProps';
-
-type Props = RenderSplitterProps & {
-  color: string;
-  hoverColor: string;
-};
-
-const HitArea = styled.div.attrs(({ horizontal, hoverColor }: { horizontal: boolean; hoverColor: string }): any => ({
-  cursor: horizontal ? 'row-resize' : 'col-resize',
-  hoverColor,
-}))`
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
-  cursor: ${(props) => props.cursor};
-  background: transparent;
-  &:hover .default-split-visual {
-    background: ${(props) => props.hoverColor};
-  }
-  user-select: none;
-`;
+import './defaultSplitter.css';
 
 const getThinLineSize = (size: number) => `${size % 2 === 0 ? 2 : 3}px`;
 const getCenteredMargin = (size: number) => `${Math.max(0, Math.floor(size / 2) - 1)}px`;
 
-const Splitter = styled.div.attrs(
-  ({ horizontal, splitterSize, color }: { horizontal: boolean; splitterSize: number; color: string }): any => ({
-    color,
-    height: horizontal ? getThinLineSize(splitterSize) : '100%',
-    width: horizontal ? '100%' : getThinLineSize(splitterSize),
-    marginLeft: horizontal ? '0' : getCenteredMargin(splitterSize),
-    marginTop: horizontal ? getCenteredMargin(splitterSize) : '0',
-  })
-)`
-  box-sizing: border-box;
-  outline: none;
-  overflow: hidden;
-  height: ${(props) => props.height};
-  width: ${(props) => props.width};
-  margin-left: ${(props) => props.marginLeft};
-  margin-top: ${(props) => props.marginTop};
-  background: ${(props) => props.color};
-`;
+type Props = RenderSplitterProps & {
+  color?: string;
+  hoverColor?: string;
+  dragColor?: string;
+};
 
 /**
- * The default splitter which provides a thin line within a possibly larger mouse hit area.
- * @param props
+ * The default splitter which provides a thin line within a larger mouse hit area.
  */
 export const DefaultSplitter = (props: Props) => {
-  const { horizontal, pixelSize, color, hoverColor } = props;
+  const { dragging, pixelSize, color = 'silver', hoverColor = 'gray', dragColor = 'black' } = props;
+
+  const cssProperties = {
+    '--default-splitter-line-margin': getCenteredMargin(pixelSize),
+    '--default-splitter-line-size': getThinLineSize(pixelSize),
+    '--default-splitter-line-color': dragging ? dragColor : color,
+    '--default-splitter-line-hover-color': dragging ? dragColor : hoverColor,
+  } as React.CSSProperties;
 
   return (
-    <HitArea horizontal={horizontal} hoverColor={hoverColor}>
-      <Splitter horizontal={horizontal} splitterSize={pixelSize} color={color} className="default-split-visual" />
-    </HitArea>
+    <div className="default-splitter" style={cssProperties}>
+      <div className="line" />
+    </div>
   );
 };
