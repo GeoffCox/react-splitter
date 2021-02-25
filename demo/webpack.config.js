@@ -25,15 +25,6 @@ module.exports = {
     ]
   },
 
-  // When importing a module whose path matches one of the following, just
-  // assume a corresponding global variable exists and use that instead.
-  // This is important because it allows us to avoid bundling all of our
-  // dependencies, which allows browsers to cache standard libraries like React once.
-  // externals: {
-  //   "react": "React",
-  //   "react-dom": "ReactDOM"
-  // },
-
   // When the env is "development", this tells webpack to provide debuggable information in the source maps and turns off some optimizations.
   mode: process.env.NODE_ENV,
 
@@ -74,8 +65,6 @@ module.exports = {
       template: HtmlWebpackTemplate,
       appMountId: "app",
       scripts: [
-        // `https://unpkg.com/react@${packageJson.dependencies['react']}/umd/react.production.min.js`,
-        // `https://unpkg.com/react-dom@${packageJson.dependencies['react-dom']}/umd/react-dom.production.min.js`,
         'index.js'
       ]
     })
