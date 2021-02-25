@@ -1,9 +1,10 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./components/App";
-import "./stylesheet.css";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+import { App } from './components/App';
+import './stylesheet.css';
+import '../../package/build/bundle.css';
 
-const appElement = document.getElementById("app");
+const appElement = document.getElementById('app');
 
 // Creates an application
 const createApp = (AppComponent: typeof App) => {
