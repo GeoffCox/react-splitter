@@ -2,8 +2,12 @@ import * as React from 'react';
 import { default as Measure, ContentRect } from 'react-measure';
 import { DefaultSplitter } from './DefaultSplitter';
 import { RenderSplitterProps } from './RenderSplitterProps';
-import { useDebounce } from './useDebounceHook';
 import './split.css';
+
+type MeasuredDimensions = {
+  height: number;
+  width: number;
+};
 
 export type SplitMeasuredSizes = {
   /**
@@ -104,19 +108,37 @@ export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element =
     onMeasuredSizesChanged,
   } = props;
 
-  const [currentContentSize, setCurrentContentSize] = React.useState<number>(0);
-  const [currentPrimarySize, setCurrentPrimarySize] = React.useState<number>(0);
-  const [currentSplitterSize, setCurrentSplitterSize] = React.useState<number>(0);
+  const [contentMeasuredDimensions, setContentMeasuredDimensions] = React.useState<MeasuredDimensions>({
+    height: 0,
+    width: 0,
+  });
+  const [primaryMeasuredDimensions, setPrimaryMeasuredDimensions] = React.useState<MeasuredDimensions>({
+    height: 0,
+    width: 0,
+  });
+  const [splitterMeasuredDimensions, setSplitterMeasuredDimensions] = React.useState<MeasuredDimensions>({
+    height: 0,
+    width: 0,
+  });
+
+  const currentContentSize = React.useMemo(
+    () => (horizontal ? contentMeasuredDimensions.height : contentMeasuredDimensions.width),
+    [horizontal, contentMeasuredDimensions]
+  );
+  const currentPrimarySize = React.useMemo(
+    () => (horizontal ? primaryMeasuredDimensions.height : primaryMeasuredDimensions.width),
+    [horizontal, primaryMeasuredDimensions]
+  );
+  const currentSplitterSize = React.useMemo(
+    () => (horizontal ? splitterMeasuredDimensions.height : splitterMeasuredDimensions.width),
+    [horizontal, splitterMeasuredDimensions]
+  );
 
   const [percent, setPercent] = React.useState<number | undefined>(undefined);
 
   const [clientStart, setClientStart] = React.useState(0);
   const [primaryStart, setPrimaryStart] = React.useState(0);
   const [dragging, setDragging] = React.useState(false);
-
-  const debouncedContentSize = useDebounce(currentContentSize, 500);
-  const debouncedPrimarySize = useDebounce(currentPrimarySize, 500);
-  const debouncedSplitterSize = useDebounce(currentSplitterSize, 500);
 
   React.useEffect(() => {
     if (onSplitChanged) {
@@ -127,23 +149,26 @@ export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element =
   React.useEffect(() => {
     if (onMeasuredSizesChanged) {
       onMeasuredSizesChanged({
-        primary: debouncedPrimarySize,
-        splitter: debouncedSplitterSize,
-        secondary: debouncedContentSize - (debouncedPrimarySize + debouncedSplitterSize),
+        primary: currentPrimarySize,
+        splitter: currentSplitterSize,
+        secondary: currentContentSize - (currentPrimarySize + currentSplitterSize),
       });
     }
-  }, [debouncedContentSize, debouncedPrimarySize, debouncedSplitterSize]);
+  }, [horizontal, currentContentSize, currentPrimarySize, currentSplitterSize]);
 
   const onMeasureContent = (contentRect: ContentRect) => {
-    contentRect.bounds && setCurrentContentSize(horizontal ? contentRect.bounds.height : contentRect.bounds.width);
+    contentRect.bounds &&
+      setContentMeasuredDimensions({ height: contentRect.bounds.height, width: contentRect.bounds.width });
   };
 
   const onMeasurePrimary = (contentRect: ContentRect) => {
-    contentRect.bounds && setCurrentPrimarySize(horizontal ? contentRect.bounds.height : contentRect.bounds.width);
+    contentRect.bounds &&
+      setPrimaryMeasuredDimensions({ height: contentRect.bounds.height, width: contentRect.bounds.width });
   };
 
   const onMeasureSplitter = (contentRect: ContentRect) => {
-    contentRect.bounds && setCurrentSplitterSize(horizontal ? contentRect.bounds.height : contentRect.bounds.width);
+    contentRect.bounds &&
+      setSplitterMeasuredDimensions({ height: contentRect.bounds.height, width: contentRect.bounds.width });
   };
 
   const onSplitPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
