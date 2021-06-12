@@ -54,6 +54,7 @@ const ActionButton = styled.button`
 type Props = {
   id: string;
   onRemove?: (childId: string) => void;
+  onToggleParentSplit?: () => void;
 };
 
 /**
@@ -61,7 +62,7 @@ type Props = {
  * @param props
  */
 export const DynamicPane = (props: Props) => {
-  const { id, onRemove } = props;
+  const { id, onRemove, onToggleParentSplit } = props;
 
   const [splitNode, setSplitNode] = useRecoilState(splitStateFamily(id));
   const { options, primaryId, secondaryId } = splitNode;
@@ -86,34 +87,52 @@ export const DynamicPane = (props: Props) => {
   // We do this by saving the remaining pane's split options as this pane's split options.
   // Finally, we clear up the child and remaining state.
   const onRemoveChildPane = useRecoilCallback(
-    ({ snapshot, set, reset }) => async (childId: string) => {
-      const node = await snapshot.getPromise(splitStateFamily(id));
+    ({ snapshot, set, reset }) =>
+      async (childId: string) => {
+        const node = await snapshot.getPromise(splitStateFamily(id));
 
-      const remainingId =
-        node?.primaryId === childId ? node.secondaryId : node?.secondaryId === childId ? node.primaryId : undefined;
+        const remainingId =
+          node?.primaryId === childId ? node.secondaryId : node?.secondaryId === childId ? node.primaryId : undefined;
 
-      if (remainingId === undefined) {
-        return;
-      }
+        if (remainingId === undefined) {
+          return;
+        }
 
-      const remainingNode = await snapshot.getPromise(splitStateFamily(remainingId));
+        const remainingNode = await snapshot.getPromise(splitStateFamily(remainingId));
 
-      set(splitStateFamily(id), {
-        ...remainingNode,
-        id: node.id,
-      });
+        set(splitStateFamily(id), {
+          ...remainingNode,
+          id: node.id,
+        });
 
-      reset(splitStateFamily(childId));
-      reset(splitStateFamily(remainingId));
-    },
+        reset(splitStateFamily(childId));
+        reset(splitStateFamily(remainingId));
+      },
     [id]
   );
+
+  const onToggleSplit = () => {
+    const newNode: SplitNode = {
+      ...splitNode,
+      options: {
+        ...createOptions,
+        horizontal: !splitNode.options?.horizontal,
+      },
+    };
+
+    setSplitNode(newNode);
+  };
 
   const renderActions = () => {
     return (
       <ActionsArea>
         <ActionButtons>
           <ActionButton onClick={onSplit}>Split</ActionButton>
+          {onToggleParentSplit && (
+            <ActionButton onClick={() => onToggleParentSplit?.()} title="Toggle Parent Split">
+              /
+            </ActionButton>
+          )}
           {onRemove && (
             <ActionButton onClick={() => onRemove(id)} title="Remove Split">
               X
@@ -147,8 +166,16 @@ export const DynamicPane = (props: Props) => {
           splitterSize={options.splitterSize}
           resetOnDoubleClick
         >
-          {primaryId ? <DynamicPane id={primaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
-          {secondaryId ? <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
+          {primaryId ? (
+            <DynamicPane id={primaryId} onRemove={onRemoveChildPane} onToggleParentSplit={onToggleSplit} />
+          ) : (
+            <div>ERROR</div>
+          )}
+          {secondaryId ? (
+            <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} onToggleParentSplit={onToggleSplit} />
+          ) : (
+            <div>ERROR</div>
+          )}
         </Split>
       )
     );
@@ -165,8 +192,16 @@ export const DynamicPane = (props: Props) => {
         splitterSize={options?.splitterSize}
         resetOnDoubleClick
       >
-        {primaryId ? <DynamicPane id={primaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
-        {secondaryId ? <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} /> : <div>ERROR</div>}
+        {primaryId ? (
+          <DynamicPane id={primaryId} onRemove={onRemoveChildPane} onToggleParentSplit={onToggleSplit} />
+        ) : (
+          <div>ERROR</div>
+        )}
+        {secondaryId ? (
+          <DynamicPane id={secondaryId} onRemove={onRemoveChildPane} onToggleParentSplit={onToggleSplit} />
+        ) : (
+          <div>ERROR</div>
+        )}
       </Split>
     );
   };
