@@ -15,6 +15,11 @@
   "bugs": {
     "url": "https://github.com/GeoffCox/react-splitter/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GeoffCox/react-splitter.git",
+    "directory":"package"
+  },
   "homepage": "https://github.com/GeoffCox/react-splitter/",
   "keywords": [
     "splitter",
