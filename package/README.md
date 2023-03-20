@@ -22,7 +22,7 @@ The default creates a left|right split down the middle, no minimum pane sizes, a
 ```tsx
 <Split>
   <div>This is the left pane.</div>
-  <div>This is the right pane.<div>
+  <div>This is the right pane.</div>
 </Split>
 ```
 
