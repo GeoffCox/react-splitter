@@ -2,7 +2,7 @@ import * as React from 'react';
 import { default as Measure, ContentRect } from 'react-measure';
 import { DefaultSplitter } from './DefaultSplitter';
 import { RenderSplitterProps } from './RenderSplitterProps';
-import './split.css';
+//import './split.css';
 
 type MeasuredDimensions = {
   height: number;
@@ -66,6 +66,11 @@ export type SplitProps = {
    */
   resetOnDoubleClick?: boolean;
   /**
+   * Which of the panes can be collapsed by clicking on the splitter
+   * Values can be 'none', 'primary', 'secondary'. Default is 'none'
+   */
+  collapsible?: 'none' | 'primary' | 'secondary';
+  /**
    * The colors to use for the default splitter.
    * Only used when renderSplitter is undefined;
    * The defaults are silver, gray, and black
@@ -91,14 +96,15 @@ export type SplitProps = {
 };
 
 export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element => {
-  const {
+  let {
     horizontal = false,
     initialPrimarySize = '50%',
     minPrimarySize = '0px',
     minSecondarySize = '0px',
-    splitterSize = '7px',
+    splitterSize = 'undefined',
     renderSplitter,
     resetOnDoubleClick = false,
+    collapsible = 'none',
     defaultSplitterColors = {
       color: 'silver',
       hover: 'gray',
@@ -107,7 +113,8 @@ export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element =
     onSplitChanged,
     onMeasuredSizesChanged,
   } = props;
-
+  if (splitterSize === 'undefined')
+    splitterSize = collapsible === 'none' ? '7px' : '21px';
   const [contentMeasuredDimensions, setContentMeasuredDimensions] = React.useState<MeasuredDimensions>({
     height: 0,
     width: 0,
@@ -135,10 +142,12 @@ export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element =
   );
 
   const [percent, setPercent] = React.useState<number | undefined>(undefined);
+  const [lastPercent, setLastPercent] = React.useState<number | undefined>(undefined);
 
   const [clientStart, setClientStart] = React.useState(0);
   const [primaryStart, setPrimaryStart] = React.useState(0);
   const [dragging, setDragging] = React.useState(false);
+  const [collapsed, setCollapsed] = React.useState(false);
 
   React.useEffect(() => {
     if (onSplitChanged) {
@@ -191,10 +200,25 @@ export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element =
   const onSplitPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     event.currentTarget.releasePointerCapture(event.pointerId);
     setDragging(false);
+    const position = horizontal ? event.clientY : event.clientX;
+    let diff = position - clientStart;
+    diff *= diff;
+    if (diff < 1 && collapsible !== 'none') {
+      // click
+      const newPercent = collapsed ? lastPercent : collapsible === 'primary' ? 0 : 100;
+      setPercent(newPercent);
+      setCollapsed(!collapsed);
+    } else {
+      if (percent !== 0) setLastPercent(percent);
+      setCollapsed(percent === 0);
+    }
   };
 
   const onSplitDoubleClick = () => {
-    resetOnDoubleClick && setPercent(undefined);
+    if (resetOnDoubleClick) {
+      setPercent(undefined);
+      setLastPercent(undefined);
+    }
   };
 
   const children = React.Children.toArray(props.children);
@@ -203,14 +227,16 @@ export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element =
 
   const renderSizes = {
     primary: percent !== undefined ? `${percent}%` : initialPrimarySize,
-    minPrimary: minPrimarySize ?? '0px',
-    minSecondary: minSecondarySize ?? '0px',
+    minPrimary: minPrimarySize === undefined || (collapsible === 'primary' && collapsed) ? '0px' : minPrimarySize,
+    minSecondary:
+      minSecondarySize === undefined || (collapsible === 'secondary' && collapsed) ? '0px' : minSecondarySize,
   };
 
   const renderSplitterProps = {
     pixelSize: currentSplitterSize,
     horizontal,
     dragging: dragging,
+    collapsed: collapsed,
   };
 
   const renderSplitVisual =
