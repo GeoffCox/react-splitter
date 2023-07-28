@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RenderSplitterProps } from './RenderSplitterProps';
-//import './defaultSplitter.css';
+import './defaultSplitter.css';
 
 const getThinLineSize = (size: number) => `${size % 2 === 0 ? 2 : 3}px`;
 const getCenteredMargin = (size: number) => `${Math.max(0, Math.floor(size / 2) - 1)}px`;
