@@ -14,4 +14,9 @@ export type RenderSplitterProps = {
    * True if the user is currently dragging the splitter; false otherwise.
    */
   dragging: boolean;
+
+  /**
+   * True if the splitter is in a collapsed state; false otherwise.
+   */
+  collapsed: boolean;
 };

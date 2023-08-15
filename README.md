@@ -1,6 +1,6 @@
-# @geoffcox/react-splitter
+# @geoffcox/react-splitter (Collapsible edition)
 
-A resizable splitter for React that leverages CSS display:grid
+A resizable and collapsible splitter for React that leverages CSS display:grid
 
 [Live Demo](https://geoffcox.github.io/react-splitter-demo/index.html)
 

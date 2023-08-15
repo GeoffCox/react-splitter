@@ -1,6 +1,7 @@
 # @geoffcox/react-splitter
 
 A resizable splitter for React that leverages CSS display:grid
+Now with collapse functionality
 
 [Live Demo](https://geoffcox.github.io/react-splitter-demo/index.html)
 
@@ -118,13 +119,14 @@ const renderSplitter = (props: RenderSplitterProps) => {
 </Split>
 ```
 
-The callback receives the `RenderSplitterProps` to let you know the current size of the splitter, if the split is horizontal, and if the splitter is currently being dragged.
+The callback receives the `RenderSplitterProps` to let you know the current size of the splitter, if the split is horizontal, if the splitter is currently being dragged, and if the splitter is in a collapsed state.
 
 ```ts
 export type RenderSplitterProps = {
   pixelSize: number;
   horizontal: boolean;
   dragging: boolean;
+  collapsed: boolean;
 };
 ```
 
@@ -145,6 +147,21 @@ const onMeasuredSizesChanged = (sizes: SplitMeasuredPixelSizes) => {
 <Split onSplitChanged={onSplitChanged} onMeasuredSizesChanged={onMeasuredSizesChanged}>
   <div>Primary pane</div>
   <div>Secondary pane<div>
+</Split>
+```
+
+## Collapse panel
+You can make one of the panels collapsible.
+You can collapse a panel by clicking on it. 
+Use the prop `collapsible` to enable collapse for one of the panels. 
+Possible values are `none`, `primary` and `secondary`. 
+
+```tsx
+<Split
+    collapsible={'secondary'}
+    splitterSize="24px">
+    <div>Primary pane</div>
+    <div>Secondary pane<div>
 </Split>
 ```
 # Integrating into a web application
