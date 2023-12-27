@@ -221,6 +221,7 @@ export const Split = (props: React.PropsWithChildren<SplitProps>): JSX.Element =
           {...renderSplitterProps}
           color={dragging ? defaultSplitterColors.drag : defaultSplitterColors.color}
           hoverColor={dragging ? defaultSplitterColors.drag : defaultSplitterColors.hover}
+          dragColor={defaultSplitterColors.drag}
         />
       );
     });
